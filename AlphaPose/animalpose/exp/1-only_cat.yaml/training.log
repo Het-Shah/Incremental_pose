@@ -1,0 +1,57 @@
+******************************
+Namespace(board=True, cfg='./configs/only_cat.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='1', gpus=[0, 1, 2], launcher='none', map=True, nThreads=1, rank=-1, snapshot=2, sync=False, work_dir='./exp/1-only_cat.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS': 'cat', 'DATASET': {'IMAGES': '/media2/het/data/cropped_images/', 'ANNOT': '/media2/het/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [256, 256, 256], 'NUM_LAYERS': 50}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'WORLD_SIZE': 4, 'BATCH_SIZE': 1, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 10, 'DPG_STEP': [5, 9]}, 'FILE_NAME': 'only_cat.yaml'}
+******************************
+Create new model
+=> init weights
+############# Starting Epoch 0 | LR: 0.0001 #############
+Train-0 epoch | loss:0.00033098 | acc:0.3323
+############# Starting Epoch 1 | LR: 0.0001 #############
+Train-1 epoch | loss:0.00028638 | acc:0.4834
+##### Epoch 1 | Loss: 0.00034597294870764017 | acc: 0.4497036217316655 #####
+############# Starting Epoch 2 | LR: 0.0001 #############
+Train-2 epoch | loss:0.00023852 | acc:0.6096
+############# Starting Epoch 3 | LR: 0.0001 #############
+Train-3 epoch | loss:0.00018502 | acc:0.7233
+##### Epoch 3 | Loss: 0.0003175392048433423 | acc: 0.5324287358123713 #####
+############# Starting Epoch 4 | LR: 0.0001 #############
+Train-4 epoch | loss:0.00014563 | acc:0.8032
+############# Starting Epoch 5 | LR: 0.0001 #############
+Train-5 epoch | loss:0.00011329 | acc:0.8577
+##### Epoch 5 | Loss: 0.00029423212981782854 | acc: 0.6652382881311574 #####
+############# Starting Epoch 6 | LR: 0.0001 #############
+Train-6 epoch | loss:0.00008642 | acc:0.8975
+############# Starting Epoch 7 | LR: 0.0001 #############
+Train-7 epoch | loss:0.00007110 | acc:0.9311
+##### Epoch 7 | Loss: 0.00031144797685556114 | acc: 0.6938592643107006 #####
+############# Starting Epoch 8 | LR: 0.0001 #############
+Train-8 epoch | loss:0.00005362 | acc:0.9547
+############# Starting Epoch 9 | LR: 0.0001 #############
+Train-9 epoch | loss:0.00004253 | acc:0.9685
+##### Epoch 9 | Loss: 0.0002736927999649197 | acc: 0.7475208697955792 #####
+############# Starting Epoch 10 | LR: 0.0001 #############
+Train-10 epoch | loss:0.00004178 | acc:0.9729
+############# Starting Epoch 11 | LR: 0.0001 #############
+Train-11 epoch | loss:0.00004744 | acc:0.9665
+##### Epoch 11 | Loss: 0.000323374813888222 | acc: 0.7090730548331438 #####
+############# Starting Epoch 12 | LR: 0.0001 #############
+Train-12 epoch | loss:0.00003183 | acc:0.9781
+############# Starting Epoch 13 | LR: 0.0001 #############
+Train-13 epoch | loss:0.00002255 | acc:0.9846
+##### Epoch 13 | Loss: 0.00024358868540730327 | acc: 0.7682895674871567 #####
+############# Starting Epoch 14 | LR: 0.0001 #############
+Train-14 epoch | loss:0.00002288 | acc:0.9867
+############# Starting Epoch 15 | LR: 0.0001 #############
+Train-15 epoch | loss:0.00002082 | acc:0.9894
+##### Epoch 15 | Loss: 0.0002866634167730808 | acc: 0.7581683715186622 #####
+############# Starting Epoch 16 | LR: 1e-05 #############
+Train-16 epoch | loss:0.00001504 | acc:0.9909
+############# Starting Epoch 17 | LR: 1e-05 #############
+Train-17 epoch | loss:0.00000875 | acc:0.9915
+##### Epoch 17 | Loss: 0.0002359120117034763 | acc: 0.787191314822129 #####
+############# Starting Epoch 18 | LR: 1e-05 #############
+Train-18 epoch | loss:0.00000613 | acc:0.9925
+############# Starting Epoch 19 | LR: 1e-05 #############
+Train-19 epoch | loss:0.00000473 | acc:0.9927
+##### Epoch 19 | Loss: 0.00024337229842785746 | acc: 0.8169616735673508 #####

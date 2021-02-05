@@ -1,0 +1,243 @@
+******************************
+Namespace(board=True, cfg='./configs/incremental.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='7', gpus=[0, 1, 2], launcher='none', map=True, nThreads=1, rank=-1, snapshot=2, sync=False, work_dir='./exp/7-incremental.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS_BASE': ['cat', 'dog', 'cow'], 'ANIMAL_CLASS_INCREMENTAL': ['horse', 'sheep'], 'INCREMENTAL_STEP': 1, 'DATASET': {'IMAGES': '/media2/het/data/cropped_images/', 'ANNOT': '/media2/het/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [256, 256, 256], 'NUM_LAYERS': 50}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'WORLD_SIZE': 4, 'BATCH_SIZE': 1, 'VAL_BATCH_SIZE': 20, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 10, 'DPG_STEP': [5, 9]}, 'TRAIN_INCREMENTAL': {'BATCH_SIZE': 1, 'VAL_BATCH_SIZE': 20, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 10, 'DPG_STEP': [15, 19]}, 'FILE_NAME': 'incremental.yaml'}
+******************************
+Create new model
+=> init weights
+############# Starting Base Training with base classes ['cat', 'dog', 'cow'] ########################
+############# Starting Epoch 0 | LR: 0.0001 #############
+Base_Train-0 epoch | loss:0.00017473 | acc:0.3691
+##### Epoch 0 | Loss: 0.0004552369937300682 | acc: 0.36892392418928 #####
+############# Starting Epoch 1 | LR: 0.0001 #############
+Base_Train-1 epoch | loss:0.00015308 | acc:0.5097
+##### Epoch 1 | Loss: 0.00042128239874728024 | acc: 0.40093523092497896 #####
+############# Starting Epoch 2 | LR: 0.0001 #############
+Base_Train-2 epoch | loss:0.00013374 | acc:0.6012
+##### Epoch 2 | Loss: 0.0004554422339424491 | acc: 0.4119175962134502 #####
+############# Starting Epoch 3 | LR: 0.0001 #############
+Base_Train-3 epoch | loss:0.00011324 | acc:0.6885
+##### Epoch 3 | Loss: 0.0004285514587536454 | acc: 0.43851705161607235 #####
+############# Starting Epoch 4 | LR: 0.0001 #############
+Base_Train-4 epoch | loss:0.00009409 | acc:0.7667
+##### Epoch 4 | Loss: 0.0004990872112102807 | acc: 0.43552418845696544 #####
+############# Starting Epoch 5 | LR: 0.0001 #############
+Base_Train-5 epoch | loss:0.00007583 | acc:0.8299
+##### Epoch 5 | Loss: 0.00047968412400223315 | acc: 0.4457466444399608 #####
+############# Starting Epoch 6 | LR: 0.0001 #############
+Base_Train-6 epoch | loss:0.00006145 | acc:0.8734
+##### Epoch 6 | Loss: 0.00041897763730958104 | acc: 0.45576727795303346 #####
+############# Starting Epoch 7 | LR: 0.0001 #############
+Base_Train-7 epoch | loss:0.00005126 | acc:0.9007
+##### Epoch 7 | Loss: 0.00046714310883544385 | acc: 0.4723767906644748 #####
+############# Starting Epoch 8 | LR: 0.0001 #############
+Base_Train-8 epoch | loss:0.00004244 | acc:0.9203
+##### Epoch 8 | Loss: 0.00042631590622477233 | acc: 0.4440861052789506 #####
+############# Starting Epoch 9 | LR: 0.0001 #############
+Base_Train-9 epoch | loss:0.00003754 | acc:0.9311
+##### Epoch 9 | Loss: 0.0004237841931171715 | acc: 0.48397687349514457 #####
+############# Starting Epoch 10 | LR: 0.0001 #############
+Base_Train-10 epoch | loss:0.00003244 | acc:0.9406
+##### Epoch 10 | Loss: 0.00041675686952658 | acc: 0.47685600245361043 #####
+############# Starting Epoch 11 | LR: 0.0001 #############
+Base_Train-11 epoch | loss:0.00002743 | acc:0.9483
+##### Epoch 11 | Loss: 0.00041522449464537203 | acc: 0.44939400312785577 #####
+############# Starting Epoch 12 | LR: 0.0001 #############
+Base_Train-12 epoch | loss:0.00002550 | acc:0.9528
+##### Epoch 12 | Loss: 0.0003829856577794999 | acc: 0.47353774196617365 #####
+############# Starting Epoch 13 | LR: 0.0001 #############
+Base_Train-13 epoch | loss:0.00002245 | acc:0.9576
+##### Epoch 13 | Loss: 0.0003957403532695025 | acc: 0.49274347577409333 #####
+############# Starting Epoch 14 | LR: 0.0001 #############
+Base_Train-14 epoch | loss:0.00001968 | acc:0.9618
+##### Epoch 14 | Loss: 0.0004365798085927963 | acc: 0.4959120467244262 #####
+############# Starting Epoch 15 | LR: 0.0001 #############
+Base_Train-15 epoch | loss:0.00001754 | acc:0.9644
+##### Epoch 15 | Loss: 0.0004096316115465015 | acc: 0.507637845271999 #####
+############# Starting Epoch 16 | LR: 1e-05 #############
+Base_Train-16 epoch | loss:0.00001342 | acc:0.9680
+##### Epoch 16 | Loss: 0.00036218742025084794 | acc: 0.4902628069585442 #####
+############# Starting Epoch 17 | LR: 1e-05 #############
+Base_Train-17 epoch | loss:0.00000967 | acc:0.9694
+##### Epoch 17 | Loss: 0.0003815700183622539 | acc: 0.517868295813319 #####
+############# Starting Epoch 18 | LR: 1e-05 #############
+Base_Train-18 epoch | loss:0.00000802 | acc:0.9708
+##### Epoch 18 | Loss: 0.00039914052467793226 | acc: 0.5524417452536506 #####
+############# Starting Epoch 19 | LR: 1e-05 #############
+Base_Train-19 epoch | loss:0.00000712 | acc:0.9716
+##### Epoch 19 | Loss: 0.000369615649105981 | acc: 0.5559630343357946 #####
+#######################################################################################################################
+############# Starting Incremental Training step 0 with incremental classes ['horse'] ########################
+############# Starting Epoch 0 | LR: 0.0001 #############
+Incremental_Train0-0 epoch | loss:0.00017056 | acc:0.5636
+******************************
+Namespace(board=True, cfg='./configs/incremental.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='7', gpus=[0, 1, 2], launcher='none', map=True, nThreads=1, rank=-1, snapshot=2, sync=False, work_dir='./exp/7-incremental.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS_BASE': ['cat', 'dog', 'cow'], 'ANIMAL_CLASS_INCREMENTAL': ['horse', 'sheep'], 'INCREMENTAL_STEP': 1, 'DATASET': {'IMAGES': '/media2/het/data/cropped_images/', 'ANNOT': '/media2/het/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '/media2/het/AlphaPose/animalpose/exp/7-incremental.yaml/final.pth', 'NUM_DECONV_FILTERS': [256, 256, 256], 'NUM_LAYERS': 50}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'WORLD_SIZE': 4, 'BATCH_SIZE': 1, 'VAL_BATCH_SIZE': 20, 'BEGIN_EPOCH': 0, 'END_EPOCH': 0, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 10, 'DPG_STEP': [5, 9]}, 'TRAIN_INCREMENTAL': {'BATCH_SIZE': 1, 'VAL_BATCH_SIZE': 20, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 10, 'DPG_STEP': [15, 19]}, 'FILE_NAME': 'incremental.yaml'}
+******************************
+Loading model from /media2/het/AlphaPose/animalpose/exp/7-incremental.yaml/final.pth...
+############# Starting Base Training with base classes ['cat', 'dog', 'cow'] ########################
+#######################################################################################################################
+############# Starting Incremental Training step 0 with incremental classes ['horse'] ########################
+############# Starting Epoch 0 | LR: 0.0001 #############
+Incremental_Train0-0 epoch | loss:0.00017160 | acc:0.5663
+##### Evaluating on incremental classes Epoch 0 | Loss: 0.000530488439835608 | acc: 0.4784593530401263 #####
+##### Evaluating on base classes Epoch 0 | Loss: 0.00040326573071070015 | acc: 0.38559263060209753 #####
+############# Starting Epoch 1 | LR: 0.0001 #############
+Incremental_Train0-1 epoch | loss:0.00010220 | acc:0.8121
+##### Evaluating on incremental classes Epoch 1 | Loss: 0.0004229798214510083 | acc: 0.5407373622872189 #####
+##### Evaluating on base classes Epoch 1 | Loss: 0.0003907315549440682 | acc: 0.3513356799328671 #####
+############# Starting Epoch 2 | LR: 0.0001 #############
+Incremental_Train0-2 epoch | loss:0.00005848 | acc:0.8990
+##### Evaluating on incremental classes Epoch 2 | Loss: 0.0003718736406881362 | acc: 0.549866442328749 #####
+##### Evaluating on base classes Epoch 2 | Loss: 0.00039216509321704507 | acc: 0.3304262220306657 #####
+############# Starting Epoch 3 | LR: 0.0001 #############
+Incremental_Train0-3 epoch | loss:0.00003787 | acc:0.9359
+##### Evaluating on incremental classes Epoch 3 | Loss: 0.0003860792494378984 | acc: 0.5791969811694672 #####
+##### Evaluating on base classes Epoch 3 | Loss: 0.0003965607611462474 | acc: 0.32108081045629316 #####
+############# Starting Epoch 4 | LR: 0.0001 #############
+Incremental_Train0-4 epoch | loss:0.00002767 | acc:0.9549
+##### Evaluating on incremental classes Epoch 4 | Loss: 0.00042523289448581636 | acc: 0.6051099721505362 #####
+##### Evaluating on base classes Epoch 4 | Loss: 0.00040288877789862454 | acc: 0.338449186139215 #####
+############# Starting Epoch 5 | LR: 0.0001 #############
+Incremental_Train0-5 epoch | loss:0.00002188 | acc:0.9649
+##### Evaluating on incremental classes Epoch 5 | Loss: 0.0003766101144719869 | acc: 0.6160618113910103 #####
+##### Evaluating on base classes Epoch 5 | Loss: 0.0003932311665266752 | acc: 0.3165131134547389 #####
+############# Starting Epoch 6 | LR: 0.0001 #############
+Incremental_Train0-6 epoch | loss:0.00001786 | acc:0.9709
+##### Evaluating on incremental classes Epoch 6 | Loss: 0.00037767417961731553 | acc: 0.6209371256958696 #####
+##### Evaluating on base classes Epoch 6 | Loss: 0.00039764854591339827 | acc: 0.31009211692571287 #####
+############# Starting Epoch 7 | LR: 0.0001 #############
+Incremental_Train0-7 epoch | loss:0.00001481 | acc:0.9764
+##### Evaluating on incremental classes Epoch 7 | Loss: 0.0003584020887501538 | acc: 0.6320698468062815 #####
+##### Evaluating on base classes Epoch 7 | Loss: 0.0003951929684262723 | acc: 0.3197055604007574 #####
+############# Starting Epoch 8 | LR: 0.0001 #############
+Incremental_Train0-8 epoch | loss:0.00001274 | acc:0.9807
+##### Evaluating on incremental classes Epoch 8 | Loss: 0.00034660848905332386 | acc: 0.6440916271088132 #####
+##### Evaluating on base classes Epoch 8 | Loss: 0.00039493051008321345 | acc: 0.3141179311428905 #####
+############# Starting Epoch 9 | LR: 0.0001 #############
+Incremental_Train0-9 epoch | loss:0.00001122 | acc:0.9822
+##### Evaluating on incremental classes Epoch 9 | Loss: 0.0003332278283778578 | acc: 0.6278662809732789 #####
+##### Evaluating on base classes Epoch 9 | Loss: 0.00039633511914871633 | acc: 0.28010090392970843 #####
+############# Starting Epoch 10 | LR: 0.0001 #############
+Incremental_Train0-10 epoch | loss:0.00001008 | acc:0.9844
+##### Evaluating on incremental classes Epoch 10 | Loss: 0.00032416792237199843 | acc: 0.6240014307224766 #####
+##### Evaluating on base classes Epoch 10 | Loss: 0.00039871750050224364 | acc: 0.2728543743394063 #####
+############# Starting Epoch 11 | LR: 0.0001 #############
+Incremental_Train0-11 epoch | loss:0.00000882 | acc:0.9866
+##### Evaluating on incremental classes Epoch 11 | Loss: 0.00036749918945133686 | acc: 0.6299949315962361 #####
+##### Evaluating on base classes Epoch 11 | Loss: 0.00040250501479022205 | acc: 0.2609556139299166 #####
+############# Starting Epoch 12 | LR: 0.0001 #############
+Incremental_Train0-12 epoch | loss:0.00000783 | acc:0.9885
+##### Evaluating on incremental classes Epoch 12 | Loss: 0.0003543997881934047 | acc: 0.6613373768003594 #####
+##### Evaluating on base classes Epoch 12 | Loss: 0.00039586040657013655 | acc: 0.29958091700331346 #####
+############# Starting Epoch 13 | LR: 0.0001 #############
+Incremental_Train0-13 epoch | loss:0.00000701 | acc:0.9883
+##### Evaluating on incremental classes Epoch 13 | Loss: 0.00033342791721224785 | acc: 0.607346525360692 #####
+##### Evaluating on base classes Epoch 13 | Loss: 0.00040272134356200695 | acc: 0.24828437298772768 #####
+############# Starting Epoch 14 | LR: 0.0001 #############
+Incremental_Train0-14 epoch | loss:0.00000639 | acc:0.9896
+##### Evaluating on incremental classes Epoch 14 | Loss: 0.00035014390596188605 | acc: 0.6595561468881685 #####
+##### Evaluating on base classes Epoch 14 | Loss: 0.00039984731120057404 | acc: 0.28170561992764787 #####
+############# Starting Epoch 15 | LR: 1e-05 #############
+Incremental_Train0-15 epoch | loss:0.00000526 | acc:0.9904
+##### Evaluating on incremental classes Epoch 15 | Loss: 0.0003343423595651984 | acc: 0.6312634852450004 #####
+##### Evaluating on base classes Epoch 15 | Loss: 0.00040205250843428075 | acc: 0.24406589636220885 #####
+############# Starting Epoch 16 | LR: 1e-05 #############
+Incremental_Train0-16 epoch | loss:0.00000390 | acc:0.9904
+##### Evaluating on incremental classes Epoch 16 | Loss: 0.0003360230475664139 | acc: 0.6452923723043967 #####
+##### Evaluating on base classes Epoch 16 | Loss: 0.00039991067023947835 | acc: 0.276083002772209 #####
+############# Starting Epoch 17 | LR: 1e-05 #############
+Incremental_Train0-17 epoch | loss:0.00000329 | acc:0.9907
+##### Evaluating on incremental classes Epoch 17 | Loss: 0.00034159861388616264 | acc: 0.6415900803644145 #####
+##### Evaluating on base classes Epoch 17 | Loss: 0.0003967789525631815 | acc: 0.28850690577811444 #####
+############# Starting Epoch 18 | LR: 1e-05 #############
+Incremental_Train0-18 epoch | loss:0.00000294 | acc:0.9912
+##### Evaluating on incremental classes Epoch 18 | Loss: 0.0003189453564118594 | acc: 0.6529406081920245 #####
+##### Evaluating on base classes Epoch 18 | Loss: 0.00039807389839552343 | acc: 0.27054286188983073 #####
+############# Starting Epoch 19 | LR: 1e-05 #############
+Incremental_Train0-19 epoch | loss:0.00000273 | acc:0.9911
+##### Evaluating on incremental classes Epoch 19 | Loss: 0.0003455544065218419 | acc: 0.6372105290203327 #####
+##### Evaluating on base classes Epoch 19 | Loss: 0.00040080558392219245 | acc: 0.2586368605085753 #####
+#######################################################################################################################
+############# Starting Incremental Training step 1 with incremental classes ['sheep'] ########################
+############# Starting Epoch 0 | LR: 0.0001 #############
+Incremental_Train1-0 epoch | loss:0.00013696 | acc:0.5211
+##### Evaluating on incremental classes Epoch 0 | Loss: 0.0003609884879551828 | acc: 0.46098513542181696 #####
+##### Evaluating on base classes Epoch 0 | Loss: 0.0004071333969477564 | acc: 0.3115023611175622 #####
+############# Starting Epoch 1 | LR: 0.0001 #############
+Incremental_Train1-1 epoch | loss:0.00008526 | acc:0.7744
+##### Evaluating on incremental classes Epoch 1 | Loss: 0.0004834689316339791 | acc: 0.5100130399494234 #####
+##### Evaluating on base classes Epoch 1 | Loss: 0.0004787387151736766 | acc: 0.28829302850820815 #####
+############# Starting Epoch 2 | LR: 0.0001 #############
+Incremental_Train1-2 epoch | loss:0.00004950 | acc:0.8765
+##### Evaluating on incremental classes Epoch 2 | Loss: 0.0005310905980877578 | acc: 0.5462993017759288 #####
+##### Evaluating on base classes Epoch 2 | Loss: 0.0004898892366327345 | acc: 0.2792444198433779 #####
+############# Starting Epoch 3 | LR: 0.0001 #############
+Incremental_Train1-3 epoch | loss:0.00003191 | acc:0.9193
+##### Evaluating on incremental classes Epoch 3 | Loss: 0.0004289687203709036 | acc: 0.5491911907404821 #####
+##### Evaluating on base classes Epoch 3 | Loss: 0.00044922143570147455 | acc: 0.26543904826384296 #####
+############# Starting Epoch 4 | LR: 0.0001 #############
+Incremental_Train1-4 epoch | loss:0.00002371 | acc:0.9411
+##### Evaluating on incremental classes Epoch 4 | Loss: 0.0003109732933808118 | acc: 0.5390987925732799 #####
+##### Evaluating on base classes Epoch 4 | Loss: 0.00041387337842024863 | acc: 0.22944129472971342 #####
+############# Starting Epoch 5 | LR: 0.0001 #############
+Incremental_Train1-5 epoch | loss:0.00001862 | acc:0.9533
+##### Evaluating on incremental classes Epoch 5 | Loss: 0.0003614682937040925 | acc: 0.5723984537350623 #####
+##### Evaluating on base classes Epoch 5 | Loss: 0.0004286282055545598 | acc: 0.2611299775801719 #####
+############# Starting Epoch 6 | LR: 0.0001 #############
+Incremental_Train1-6 epoch | loss:0.00001486 | acc:0.9594
+##### Evaluating on incremental classes Epoch 6 | Loss: 0.00035931190359406173 | acc: 0.5942108274560344 #####
+##### Evaluating on base classes Epoch 6 | Loss: 0.00042596831917762756 | acc: 0.2663904231528996 #####
+############# Starting Epoch 7 | LR: 0.0001 #############
+Incremental_Train1-7 epoch | loss:0.00001285 | acc:0.9669
+##### Evaluating on incremental classes Epoch 7 | Loss: 0.0003014335234183818 | acc: 0.5926373308310278 #####
+##### Evaluating on base classes Epoch 7 | Loss: 0.00040678688674233854 | acc: 0.24719370220943335 #####
+############# Starting Epoch 8 | LR: 0.0001 #############
+Incremental_Train1-8 epoch | loss:0.00001126 | acc:0.9699
+##### Evaluating on incremental classes Epoch 8 | Loss: 0.00035249764914624393 | acc: 0.5788683029175736 #####
+##### Evaluating on base classes Epoch 8 | Loss: 0.00042263398063369095 | acc: 0.2392525532764419 #####
+############# Starting Epoch 9 | LR: 0.0001 #############
+Incremental_Train1-9 epoch | loss:0.00000976 | acc:0.9754
+##### Evaluating on incremental classes Epoch 9 | Loss: 0.0003107873199041933 | acc: 0.5822277413954291 #####
+##### Evaluating on base classes Epoch 9 | Loss: 0.00041117685032077134 | acc: 0.25333771545456496 #####
+############# Starting Epoch 10 | LR: 0.0001 #############
+Incremental_Train1-10 epoch | loss:0.00000870 | acc:0.9783
+##### Evaluating on incremental classes Epoch 10 | Loss: 0.0005100224516354501 | acc: 0.6194552398190377 #####
+##### Evaluating on base classes Epoch 10 | Loss: 0.0004978953511454165 | acc: 0.24244707838566756 #####
+############# Starting Epoch 11 | LR: 0.0001 #############
+Incremental_Train1-11 epoch | loss:0.00000775 | acc:0.9791
+##### Evaluating on incremental classes Epoch 11 | Loss: 0.00035565326106734574 | acc: 0.6099295522719803 #####
+##### Evaluating on base classes Epoch 11 | Loss: 0.00042509165359660983 | acc: 0.24011221061974955 #####
+############# Starting Epoch 12 | LR: 0.0001 #############
+Incremental_Train1-12 epoch | loss:0.00000685 | acc:0.9803
+##### Evaluating on incremental classes Epoch 12 | Loss: 0.0003008503408636898 | acc: 0.6114923008321917 #####
+##### Evaluating on base classes Epoch 12 | Loss: 0.00041179393883794546 | acc: 0.2379434052860475 #####
+############# Starting Epoch 13 | LR: 0.0001 #############
+Incremental_Train1-13 epoch | loss:0.00000618 | acc:0.9827
+##### Evaluating on incremental classes Epoch 13 | Loss: 0.00036469221231527627 | acc: 0.6015864011850212 #####
+##### Evaluating on base classes Epoch 13 | Loss: 0.00043089405517093837 | acc: 0.2393961062965673 #####
+############# Starting Epoch 14 | LR: 0.0001 #############
+Incremental_Train1-14 epoch | loss:0.00000562 | acc:0.9839
+##### Evaluating on incremental classes Epoch 14 | Loss: 0.0003014450194314122 | acc: 0.6012840424169499 #####
+##### Evaluating on base classes Epoch 14 | Loss: 0.0004090062284376472 | acc: 0.22961905791041562 #####
+############# Starting Epoch 15 | LR: 1e-05 #############
+Incremental_Train1-15 epoch | loss:0.00000484 | acc:0.9855
+##### Evaluating on incremental classes Epoch 15 | Loss: 0.00031849369406700134 | acc: 0.5941089133186532 #####
+##### Evaluating on base classes Epoch 15 | Loss: 0.00041894917376339436 | acc: 0.21035731314690925 #####
+############# Starting Epoch 16 | LR: 1e-05 #############
+Incremental_Train1-16 epoch | loss:0.00000379 | acc:0.9853
+##### Evaluating on incremental classes Epoch 16 | Loss: 0.0003168545081280172 | acc: 0.6303099088995638 #####
+##### Evaluating on base classes Epoch 16 | Loss: 0.00041834867442958057 | acc: 0.25228870099002415 #####
+############# Starting Epoch 17 | LR: 1e-05 #############
+Incremental_Train1-17 epoch | loss:0.00000333 | acc:0.9848
+##### Evaluating on incremental classes Epoch 17 | Loss: 0.0003423776652198285 | acc: 0.646648738697401 #####
+##### Evaluating on base classes Epoch 17 | Loss: 0.0004252035287208855 | acc: 0.2425034431749182 #####
+############# Starting Epoch 18 | LR: 1e-05 #############
+Incremental_Train1-18 epoch | loss:0.00000306 | acc:0.9854
+##### Evaluating on incremental classes Epoch 18 | Loss: 0.0003332063206471503 | acc: 0.644772306742721 #####
+##### Evaluating on base classes Epoch 18 | Loss: 0.0004228301695547998 | acc: 0.23797149148554905 #####
+############# Starting Epoch 19 | LR: 1e-05 #############
+Incremental_Train1-19 epoch | loss:0.00000289 | acc:0.9862
+##### Evaluating on incremental classes Epoch 19 | Loss: 0.0003046256897505373 | acc: 0.588452830254187 #####
+##### Evaluating on base classes Epoch 19 | Loss: 0.00041224234155379236 | acc: 0.21106347326141153 #####

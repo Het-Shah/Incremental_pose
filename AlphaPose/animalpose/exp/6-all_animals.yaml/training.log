@@ -1,0 +1,57 @@
+******************************
+Namespace(board=True, cfg='./configs/all_animals.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='6', gpus=[0, 1, 2], launcher='none', map=True, nThreads=1, rank=-1, snapshot=2, sync=False, work_dir='./exp/6-all_animals.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS': 'all', 'DATASET': {'IMAGES': '/media2/het/data/cropped_images/', 'ANNOT': '/media2/het/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [256, 256, 256], 'NUM_LAYERS': 50}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'WORLD_SIZE': 4, 'BATCH_SIZE': 1, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 14, 'DPG_STEP': [5]}, 'FILE_NAME': 'all_animals.yaml'}
+******************************
+Create new model
+=> init weights
+############# Starting Epoch 0 | LR: 0.0001 #############
+Train-0 epoch | loss:0.00034135 | acc:0.4050
+############# Starting Epoch 1 | LR: 0.0001 #############
+Train-1 epoch | loss:0.00030106 | acc:0.5234
+##### Epoch 1 | Loss: 0.0003959538880735636 | acc: 0.3990325206269481 #####
+############# Starting Epoch 2 | LR: 0.0001 #############
+Train-2 epoch | loss:0.00026570 | acc:0.6185
+############# Starting Epoch 3 | LR: 0.0001 #############
+Train-3 epoch | loss:0.00021995 | acc:0.7157
+##### Epoch 3 | Loss: 0.0005620184238068759 | acc: 0.45015917461737903 #####
+############# Starting Epoch 4 | LR: 0.0001 #############
+Train-4 epoch | loss:0.00018173 | acc:0.7873
+############# Starting Epoch 5 | LR: 0.0001 #############
+Train-5 epoch | loss:0.00014537 | acc:0.8484
+##### Epoch 5 | Loss: 0.0003860927827190608 | acc: 0.4609415514730272 #####
+############# Starting Epoch 6 | LR: 0.0001 #############
+Train-6 epoch | loss:0.00011899 | acc:0.8847
+############# Starting Epoch 7 | LR: 0.0001 #############
+Train-7 epoch | loss:0.00009780 | acc:0.9094
+##### Epoch 7 | Loss: 0.0004689011548180133 | acc: 0.48774233544615403 #####
+############# Starting Epoch 8 | LR: 0.0001 #############
+Train-8 epoch | loss:0.00008249 | acc:0.9241
+############# Starting Epoch 9 | LR: 0.0001 #############
+Train-9 epoch | loss:0.00007095 | acc:0.9361
+##### Epoch 9 | Loss: 0.0004920502542518079 | acc: 0.5019120761896824 #####
+############# Starting Epoch 10 | LR: 0.0001 #############
+Train-10 epoch | loss:0.00006080 | acc:0.9441
+############# Starting Epoch 11 | LR: 0.0001 #############
+Train-11 epoch | loss:0.00005646 | acc:0.9488
+##### Epoch 11 | Loss: 0.0004453128785826266 | acc: 0.5240305217085403 #####
+############# Starting Epoch 12 | LR: 0.0001 #############
+Train-12 epoch | loss:0.00004855 | acc:0.9544
+############# Starting Epoch 13 | LR: 0.0001 #############
+Train-13 epoch | loss:0.00004481 | acc:0.9574
+##### Epoch 13 | Loss: 0.0004776057321578264 | acc: 0.5005587005587004 #####
+############# Starting Epoch 14 | LR: 0.0001 #############
+Train-14 epoch | loss:0.00004020 | acc:0.9608
+############# Starting Epoch 15 | LR: 0.0001 #############
+Train-15 epoch | loss:0.00003602 | acc:0.9640
+##### Epoch 15 | Loss: 0.00037130608689039946 | acc: 0.512567659187886 #####
+############# Starting Epoch 16 | LR: 0.0001 #############
+Train-16 epoch | loss:0.00003267 | acc:0.9658
+############# Starting Epoch 17 | LR: 0.0001 #############
+Train-17 epoch | loss:0.00003041 | acc:0.9680
+##### Epoch 17 | Loss: 0.000400749733671546 | acc: 0.510193293500827 #####
+############# Starting Epoch 18 | LR: 0.0001 #############
+Train-18 epoch | loss:0.00002698 | acc:0.9704
+############# Starting Epoch 19 | LR: 0.0001 #############
+Train-19 epoch | loss:0.00002559 | acc:0.9713
+##### Epoch 19 | Loss: 0.0003959360474254936 | acc: 0.5267396584992043 #####
