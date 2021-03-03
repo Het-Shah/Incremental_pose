@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<annotation>
+	<image>ca49.jpeg</image>
+	<category>cat</category>
+	<visible_bounds height="196" width="294" xmax="26" xmin="1"/>
+	<keypoints>
+		<keypoint name="L_eye" visible="1" x="261" y="72" z="0.00"/>
+		<keypoint name="R_eye" visible="1" x="238" y="64" z="0.00"/>
+		<keypoint name="L_ear" visible="1" x="279" y="57" z="0.00"/>
+		<keypoint name="R_ear" visible="1" x="230" y="44" z="0.00"/>
+		<keypoint name="Nose" visible="1" x="247" y="81" z="0.00"/>
+		<keypoint name="Throat" visible="1" x="241" y="118" z="0.00"/>
+		<keypoint name="Tail" visible="1" x="55" y="100" z="0.00"/>
+		<keypoint name="withers" visible="1" x="180" y="80" z="0.00"/>
+		<keypoint name="L_F_elbow" visible="1" x="228" y="164" z="0.00"/>
+		<keypoint name="R_F_elbow" visible="1" x="192" y="163" z="0.00"/>
+		<keypoint name="L_B_elbow" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_B_elbow" visible="1" x="74" y="139" z="0.00"/>
+		<keypoint name="L_F_knee" visible="1" x="238" y="193" z="0.00"/>
+		<keypoint name="R_F_knee" visible="1" x="201" y="194" z="0.00"/>
+		<keypoint name="L_B_knee" visible="1" x="103" y="188" z="0.00"/>
+		<keypoint name="R_B_knee" visible="1" x="84" y="184" z="0.00"/>
+		<keypoint name="L_F_paw" visible="1" x="251" y="217" z="0.00"/>
+		<keypoint name="R_F_paw" visible="1" x="220" y="219" z="0.00"/>
+		<keypoint name="L_B_paw" visible="1" x="116" y="211" z="0.00"/>
+		<keypoint name="R_B_paw" visible="1" x="88" y="213" z="0.00"/>
+	</keypoints>
+</annotation>

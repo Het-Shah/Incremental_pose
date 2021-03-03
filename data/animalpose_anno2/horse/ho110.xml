@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<annotation>
+	<image>ho110.jpeg</image>
+	<category>horse</category>
+	<visible_bounds height="218" width="158" xmax="40" xmin="19"/>
+	<keypoints>
+		<keypoint name="L_eye" visible="1" x="166" y="86" z="0.00"/>
+		<keypoint name="R_eye" visible="1" x="148" y="86" z="0.00"/>
+		<keypoint name="L_ear" visible="1" x="167" y="59" z="0.00"/>
+		<keypoint name="R_ear" visible="1" x="144" y="56" z="0.00"/>
+		<keypoint name="Nose" visible="1" x="170" y="120" z="0.00"/>
+		<keypoint name="Throat" visible="1" x="132" y="109" z="0.00"/>
+		<keypoint name="Tail" visible="1" x="56" y="57" z="0.00"/>
+		<keypoint name="withers" visible="1" x="95" y="63" z="0.00"/>
+		<keypoint name="L_F_elbow" visible="1" x="119" y="150" z="0.00"/>
+		<keypoint name="R_F_elbow" visible="1" x="82" y="148" z="0.00"/>
+		<keypoint name="L_B_elbow" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_B_elbow" visible="1" x="30" y="128" z="0.00"/>
+		<keypoint name="L_F_knee" visible="1" x="113" y="200" z="0.00"/>
+		<keypoint name="R_F_knee" visible="1" x="81" y="197" z="0.00"/>
+		<keypoint name="L_B_knee" visible="1" x="64" y="183" z="0.00"/>
+		<keypoint name="R_B_knee" visible="1" x="35" y="184" z="0.00"/>
+		<keypoint name="L_F_paw" visible="1" x="112" y="244" z="0.00"/>
+		<keypoint name="R_F_paw" visible="1" x="76" y="242" z="0.00"/>
+		<keypoint name="L_B_paw" visible="1" x="63" y="233" z="0.00"/>
+		<keypoint name="R_B_paw" visible="1" x="34" y="234" z="0.00"/>
+	</keypoints>
+</annotation>

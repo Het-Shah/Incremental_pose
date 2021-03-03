@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<annotation>
+	<image>sh10.jpg</image>
+	<category>sheep</category>
+	<visible_bounds height="578" width="786" xmax="164" xmin="91"/>
+	<keypoints>
+		<keypoint name="L_eye" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_eye" visible="1" x="745" y="264" z="0.00"/>
+		<keypoint name="L_ear" visible="1" x="827" y="219" z="0.00"/>
+		<keypoint name="R_ear" visible="1" x="703" y="237" z="0.00"/>
+		<keypoint name="Nose" visible="1" x="833" y="324" z="0.00"/>
+		<keypoint name="Throat" visible="1" x="708" y="411" z="0.00"/>
+		<keypoint name="Tail" visible="1" x="163" y="279" z="0.00"/>
+		<keypoint name="withers" visible="1" x="586" y="232" z="0.00"/>
+		<keypoint name="L_F_elbow" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_F_elbow" visible="1" x="571" y="474" z="0.00"/>
+		<keypoint name="L_B_elbow" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_B_elbow" visible="1" x="319" y="463" z="0.00"/>
+		<keypoint name="L_F_knee" visible="1" x="581" y="561" z="0.00"/>
+		<keypoint name="R_F_knee" visible="1" x="541" y="578" z="0.00"/>
+		<keypoint name="L_B_knee" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_B_knee" visible="1" x="266" y="582" z="0.00"/>
+		<keypoint name="L_F_paw" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_F_paw" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="L_B_paw" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_B_paw" visible="0" x="0.00" y="0.00" z="0.00"/>
+	</keypoints>
+</annotation>

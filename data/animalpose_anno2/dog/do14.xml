@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<annotation>
+	<image>do14.jpeg</image>
+	<category>dog</category>
+	<visible_bounds height="180" width="268" xmax="16" xmin="9"/>
+	<keypoints>
+		<keypoint name="L_eye" visible="1" x="224" y="71" z="0.00"/>
+		<keypoint name="R_eye" visible="1" x="200" y="73" z="0.00"/>
+		<keypoint name="L_ear" visible="1" x="228" y="45" z="0.00"/>
+		<keypoint name="R_ear" visible="1" x="195" y="49" z="0.00"/>
+		<keypoint name="Nose" visible="1" x="216" y="97" z="0.00"/>
+		<keypoint name="Throat" visible="1" x="230" y="119" z="0.00"/>
+		<keypoint name="Tail" visible="1" x="126" y="95" z="0.00"/>
+		<keypoint name="withers" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="L_F_elbow" visible="1" x="267" y="148" z="0.00"/>
+		<keypoint name="R_F_elbow" visible="1" x="207" y="160" z="0.00"/>
+		<keypoint name="L_B_elbow" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_B_elbow" visible="1" x="158" y="124" z="0.00"/>
+		<keypoint name="L_F_knee" visible="1" x="262" y="167" z="0.00"/>
+		<keypoint name="R_F_knee" visible="1" x="232" y="175" z="0.00"/>
+		<keypoint name="L_B_knee" visible="0" x="0.00" y="0.00" z="0.00"/>
+		<keypoint name="R_B_knee" visible="1" x="114" y="139" z="0.00"/>
+		<keypoint name="L_F_paw" visible="1" x="264" y="182" z="0.00"/>
+		<keypoint name="R_F_paw" visible="1" x="264" y="182" z="0.00"/>
+		<keypoint name="L_B_paw" visible="1" x="242" y="185" z="0.00"/>
+		<keypoint name="R_B_paw" visible="0" x="0.00" y="0.00" z="0.00"/>
+	</keypoints>
+</annotation>
