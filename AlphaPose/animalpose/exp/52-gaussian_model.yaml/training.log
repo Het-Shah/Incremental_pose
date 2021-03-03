@@ -1,0 +1,202 @@
+******************************
+Namespace(board=True, cfg='./configs/gaussian_model.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='52', gpus=[0], launcher='none', map=True, nThreads=60, rank=-1, snapshot=2, sync=False, work_dir='./exp/52-gaussian_model.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS_BASE': ['cat', 'dog', 'cow'], 'DATASET': {'DATA_ROOT': '/media2/het/Incremental_pose/data/', 'IMAGES': '/media2/het/Incremental_pose/data/cropped_images/', 'ANNOT': '/media2/het/Incremental_pose/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [128, 128], 'NUM_LAYERS': 50}, 'C1': {'TRAIN': True}, 'C2': {'TRAIN': False}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'BASE_DATA_FOR_INCREMENTAL': 0.1, 'WORLD_SIZE': 4, 'BATCH_SIZE': 10, 'VAL_BATCH_SIZE': 10, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'WEIGHT_DECAY': 0, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 15, 'DPG_STEP': [4]}, 'FILE_NAME': 'gaussian_model.yaml'}
+******************************
+Create new model
+=> init weights
+############# Starting Epoch 0 | LR: 0.0001 #############
+Train-0 epoch | loss:0.00017957 | acc:0.3036
+##### Epoch 0 | Loss: 0.0003282125398982316 | acc: 0.4183984708985766 #####
+############# Starting Epoch 1 | LR: 0.0001 #############
+Train-1 epoch | loss:0.00015761 | acc:0.4755
+##### Epoch 1 | Loss: 0.00030494490056298673 | acc: 0.493110800434478 #####
+############# Starting Epoch 2 | LR: 0.0001 #############
+Train-2 epoch | loss:0.00014110 | acc:0.5625
+##### Epoch 2 | Loss: 0.00028233378543518484 | acc: 0.5496490656447767 #####
+############# Starting Epoch 3 | LR: 0.0001 #############
+Train-3 epoch | loss:0.00012096 | acc:0.6320
+##### Epoch 3 | Loss: 0.00025687480228953063 | acc: 0.5930593677445433 #####
+############# Starting Epoch 4 | LR: 0.0001 #############
+Train-4 epoch | loss:0.00010596 | acc:0.6721
+##### Epoch 4 | Loss: 0.0002413991023786366 | acc: 0.6259443747965341 #####
+############# Starting Epoch 5 | LR: 0.0001 #############
+Train-5 epoch | loss:0.00009404 | acc:0.7245
+##### Epoch 5 | Loss: 0.00022579164942726493 | acc: 0.6613196808895973 #####
+############# Starting Epoch 6 | LR: 0.0001 #############
+Train-6 epoch | loss:0.00008011 | acc:0.7765
+##### Epoch 6 | Loss: 0.0002098820696119219 | acc: 0.6949496332696552 #####
+############# Starting Epoch 7 | LR: 0.0001 #############
+Train-7 epoch | loss:0.00006793 | acc:0.8099
+##### Epoch 7 | Loss: 0.00019125381368212402 | acc: 0.7218781212996052 #####
+############# Starting Epoch 8 | LR: 0.0001 #############
+Train-8 epoch | loss:0.00005943 | acc:0.8295
+##### Epoch 8 | Loss: 0.00018461448780726641 | acc: 0.7360842866041695 #####
+############# Starting Epoch 9 | LR: 0.0001 #############
+Train-9 epoch | loss:0.00005288 | acc:0.8466
+##### Epoch 9 | Loss: 0.00017147902690339833 | acc: 0.7522999053548624 #####
+############# Starting Epoch 10 | LR: 0.0001 #############
+Train-10 epoch | loss:0.00004769 | acc:0.8775
+##### Epoch 10 | Loss: 0.00016741470608394593 | acc: 0.7797715665927928 #####
+############# Starting Epoch 11 | LR: 0.0001 #############
+Train-11 epoch | loss:0.00004107 | acc:0.9075
+##### Epoch 11 | Loss: 0.00015365886793006212 | acc: 0.7960242177969534 #####
+############# Starting Epoch 12 | LR: 0.0001 #############
+Train-12 epoch | loss:0.00003623 | acc:0.9214
+##### Epoch 12 | Loss: 0.00014959073450881988 | acc: 0.809434666347382 #####
+############# Starting Epoch 13 | LR: 0.0001 #############
+Train-13 epoch | loss:0.00003252 | acc:0.9357
+##### Epoch 13 | Loss: 0.0001463777298340574 | acc: 0.8203964950443778 #####
+############# Starting Epoch 14 | LR: 0.0001 #############
+Train-14 epoch | loss:0.00002876 | acc:0.9451
+##### Epoch 14 | Loss: 0.00013802721514366567 | acc: 0.8310518611978632 #####
+############# Starting Epoch 15 | LR: 1e-05 #############
+Train-15 epoch | loss:0.00002193 | acc:0.9524
+##### Epoch 15 | Loss: 0.0001191518604173325 | acc: 0.8425392498953603 #####
+############# Starting Epoch 16 | LR: 0.0001 #############
+Train-16 epoch | loss:0.00002798 | acc:0.9496
+##### Epoch 16 | Loss: 0.00013961871445644647 | acc: 0.832996818778597 #####
+############# Starting Epoch 17 | LR: 0.0001 #############
+Train-17 epoch | loss:0.00002605 | acc:0.9530
+##### Epoch 17 | Loss: 0.000125977341667749 | acc: 0.8414377531025186 #####
+############# Starting Epoch 18 | LR: 0.0001 #############
+Train-18 epoch | loss:0.00002219 | acc:0.9567
+##### Epoch 18 | Loss: 0.00012729325680993497 | acc: 0.8423383139973748 #####
+############# Starting Epoch 19 | LR: 0.0001 #############
+Train-19 epoch | loss:0.00002139 | acc:0.9584
+##### Epoch 19 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+******************************
+Namespace(board=True, cfg='./configs/gaussian_model.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='52', gpus=[0], launcher='none', map=True, nThreads=60, rank=-1, snapshot=2, sync=False, work_dir='./exp/52-gaussian_model.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS_BASE': ['cat', 'dog', 'cow'], 'DATASET': {'DATA_ROOT': '/media2/het/Incremental_pose/data/', 'IMAGES': '/media2/het/Incremental_pose/data/cropped_images/', 'ANNOT': '/media2/het/Incremental_pose/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [128, 128], 'NUM_LAYERS': 50}, 'C1': {'TRAIN': False, 'PRETRAINED': '/media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth'}, 'C2': {'TRAIN': True}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'BASE_DATA_FOR_INCREMENTAL': 0.1, 'WORLD_SIZE': 4, 'BATCH_SIZE': 2, 'VAL_BATCH_SIZE': 10, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'WEIGHT_DECAY': 0, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 15, 'DPG_STEP': [4]}, 'FILE_NAME': 'gaussian_model.yaml'}
+******************************
+Create new model
+=> init weights
+Loading model from /media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth...
+############# Starting Epoch 0 | LR: 0.0001 #############
+******************************
+Namespace(board=True, cfg='./configs/gaussian_model.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='52', gpus=[0], launcher='none', map=True, nThreads=60, rank=-1, snapshot=2, sync=False, work_dir='./exp/52-gaussian_model.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS_BASE': ['cat', 'dog', 'cow'], 'DATASET': {'DATA_ROOT': '/media2/het/Incremental_pose/data/', 'IMAGES': '/media2/het/Incremental_pose/data/cropped_images/', 'ANNOT': '/media2/het/Incremental_pose/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [128, 128], 'NUM_LAYERS': 50}, 'C1': {'TRAIN': False, 'PRETRAINED': '/media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth'}, 'C2': {'TRAIN': True}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'BASE_DATA_FOR_INCREMENTAL': 0.1, 'WORLD_SIZE': 4, 'BATCH_SIZE': 3, 'VAL_BATCH_SIZE': 10, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'WEIGHT_DECAY': 0, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 15, 'DPG_STEP': [4]}, 'FILE_NAME': 'gaussian_model.yaml'}
+******************************
+Create new model
+=> init weights
+Loading model from /media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth...
+############# Starting Epoch 0 | LR: 0.0001 #############
+******************************
+Namespace(board=True, cfg='./configs/gaussian_model.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='52', gpus=[0], launcher='none', map=True, nThreads=60, rank=-1, snapshot=2, sync=False, work_dir='./exp/52-gaussian_model.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS_BASE': ['cat', 'dog', 'cow'], 'DATASET': {'DATA_ROOT': '/media2/het/Incremental_pose/data/', 'IMAGES': '/media2/het/Incremental_pose/data/cropped_images/', 'ANNOT': '/media2/het/Incremental_pose/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [128, 128], 'NUM_LAYERS': 50}, 'C1': {'TRAIN': False, 'PRETRAINED': '/media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth'}, 'C2': {'TRAIN': True}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'BASE_DATA_FOR_INCREMENTAL': 0.1, 'WORLD_SIZE': 4, 'BATCH_SIZE': 2, 'VAL_BATCH_SIZE': 10, 'BEGIN_EPOCH': 0, 'END_EPOCH': 20, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'WEIGHT_DECAY': 0, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 15, 'DPG_STEP': [4]}, 'FILE_NAME': 'gaussian_model.yaml'}
+******************************
+Create new model
+=> init weights
+Loading model from /media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth...
+############# Starting Epoch 0 | LR: 0.0001 #############
+Train-0 epoch | loss:10.17682220 | acc:0.9607
+##### Epoch 0 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 1 | LR: 0.0001 #############
+Train-1 epoch | loss:7.97920756 | acc:0.9605
+##### Epoch 1 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 2 | LR: 0.0001 #############
+Train-2 epoch | loss:7.29621020 | acc:0.9611
+##### Epoch 2 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 3 | LR: 0.0001 #############
+Train-3 epoch | loss:6.88798880 | acc:0.9607
+##### Epoch 3 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 4 | LR: 0.0001 #############
+Train-4 epoch | loss:6.53532064 | acc:0.9604
+##### Epoch 4 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 5 | LR: 0.0001 #############
+Train-5 epoch | loss:6.19015559 | acc:0.9606
+##### Epoch 5 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 6 | LR: 0.0001 #############
+Train-6 epoch | loss:5.81220446 | acc:0.9607
+##### Epoch 6 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 7 | LR: 0.0001 #############
+Train-7 epoch | loss:5.40895219 | acc:0.9606
+##### Epoch 7 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 8 | LR: 0.0001 #############
+Train-8 epoch | loss:5.00541151 | acc:0.9613
+##### Epoch 8 | Loss: 0.00012713622709270567 | acc: 0.8461077813149529 #####
+############# Starting Epoch 9 | LR: 0.0001 #############
+Train-9 epoch | loss:4.58267280 | acc:0.9609
+##### Epoch 9 | Loss: 0.00012713622709270567 | acc: 0.8461077813149529 #####
+############# Starting Epoch 10 | LR: 0.0001 #############
+Train-10 epoch | loss:4.16384384 | acc:0.9612
+##### Epoch 10 | Loss: 0.00012713622709270567 | acc: 0.8461077813149529 #####
+############# Starting Epoch 11 | LR: 0.0001 #############
+Train-11 epoch | loss:3.76403113 | acc:0.9610
+##### Epoch 11 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 12 | LR: 0.0001 #############
+Train-12 epoch | loss:3.37070153 | acc:0.9608
+##### Epoch 12 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 13 | LR: 0.0001 #############
+Train-13 epoch | loss:3.02195671 | acc:0.9605
+##### Epoch 13 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 14 | LR: 0.0001 #############
+Train-14 epoch | loss:2.67724047 | acc:0.9607
+##### Epoch 14 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 15 | LR: 1e-05 #############
+Train-15 epoch | loss:1.73192869 | acc:0.9610
+##### Epoch 15 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 16 | LR: 0.0001 #############
+Train-16 epoch | loss:2.35661503 | acc:0.9607
+##### Epoch 16 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 17 | LR: 0.0001 #############
+Train-17 epoch | loss:2.08378838 | acc:0.9608
+##### Epoch 17 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 18 | LR: 0.0001 #############
+Train-18 epoch | loss:1.85174323 | acc:0.9610
+##### Epoch 18 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+############# Starting Epoch 19 | LR: 0.0001 #############
+Train-19 epoch | loss:1.64604569 | acc:0.9608
+##### Epoch 19 | Loss: 0.00012713621254079044 | acc: 0.8461077813149529 #####
+******************************
+Namespace(board=True, cfg='./configs/gaussian_model.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='52', gpus=[0], launcher='none', map=True, nThreads=60, rank=-1, snapshot=2, sync=False, work_dir='./exp/52-gaussian_model.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS_BASE': ['cat', 'dog', 'cow'], 'DATASET': {'DATA_ROOT': '/media2/het/Incremental_pose/data/', 'IMAGES': '/media2/het/Incremental_pose/data/cropped_images/', 'ANNOT': '/media2/het/Incremental_pose/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [128, 128], 'NUM_LAYERS': 50}, 'C1': {'TRAIN': True, 'PRETRAINED': '/media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth'}, 'C2': {'TRAIN': True, 'PRETRAINED': '/media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights_c2.pth'}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'BASE_DATA_FOR_INCREMENTAL': 0.1, 'WORLD_SIZE': 4, 'BATCH_SIZE': 2, 'VAL_BATCH_SIZE': 10, 'BEGIN_EPOCH': 0, 'END_EPOCH': 10, 'OPTIMIZER': 'adam', 'LR': 0.0001, 'WEIGHT_DECAY': 0, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 15, 'DPG_STEP': [4]}, 'FILE_NAME': 'gaussian_model.yaml'}
+******************************
+Create new model
+=> init weights
+Loading model from /media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth...
+Loading model from /media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights_c2.pth...
+############# Starting Epoch 0 | LR: 0.0001 #############
+******************************
+Namespace(board=True, cfg='./configs/gaussian_model.yaml', debug=False, detector='yolo', device=device(type='cuda', index=0), dist_backend='nccl', dist_url='tcp://192.168.1.214:23345', exp_id='52', gpus=[0], launcher='none', map=True, nThreads=60, rank=-1, snapshot=2, sync=False, work_dir='./exp/52-gaussian_model.yaml/', world_size=4)
+******************************
+{'ANIMAL_CLASS_BASE': ['cat', 'dog', 'cow'], 'DATASET': {'DATA_ROOT': '/media2/het/Incremental_pose/data/', 'IMAGES': '/media2/het/Incremental_pose/data/cropped_images/', 'ANNOT': '/media2/het/Incremental_pose/data/updated_df.csv'}, 'DATA_PRESET': {'TYPE': 'simple', 'SIGMA': 2, 'NUM_JOINTS': 17, 'IMAGE_SIZE': [512, 512], 'HEATMAP_SIZE': [128, 128]}, 'MODEL': {'TYPE': 'FastPose', 'PRETRAINED': '', 'TRY_LOAD': '', 'NUM_DECONV_FILTERS': [128, 128], 'NUM_LAYERS': 50}, 'C1': {'TRAIN': True, 'PRETRAINED': '/media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth'}, 'C2': {'TRAIN': True, 'PRETRAINED': '/media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights_c2.pth'}, 'LOSS': {'TYPE': 'MSELoss'}, 'DETECTOR': {'NAME': 'yolo', 'CONFIG': 'detector/yolo/cfg/yolov3-spp.cfg', 'WEIGHTS': 'detector/yolo/data/yolov3-spp.weights', 'NMS_THRES': 0.6, 'CONFIDENCE': 0.05}, 'TRAIN': {'BASE_DATA_FOR_INCREMENTAL': 0.1, 'WORLD_SIZE': 4, 'BATCH_SIZE': 2, 'VAL_BATCH_SIZE': 10, 'BEGIN_EPOCH': 0, 'END_EPOCH': 10, 'OPTIMIZER': 'adam', 'LR': 1e-05, 'WEIGHT_DECAY': 0, 'LR_FACTOR': 0.1, 'LR_STEP': [15], 'DPG_MILESTONE': 15, 'DPG_STEP': [4]}, 'FILE_NAME': 'gaussian_model.yaml'}
+******************************
+Create new model
+=> init weights
+Loading model from /media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights.pth...
+Loading model from /media2/het/AlphaPose/animalpose/exp/52-gaussian_model.yaml/final_weights_c2.pth...
+############# Starting Epoch 0 | LR: 1e-05 #############
+Train-0 epoch | loss:0.46958464 | acc:0.9525
+##### Epoch 0 | Loss: 0.00012885258183814585 | acc: 0.8458617324643783 #####
+############# Starting Epoch 1 | LR: 1e-05 #############
+Train-1 epoch | loss:0.34712636 | acc:0.9524
+##### Epoch 1 | Loss: 0.00013146194396540523 | acc: 0.8433881321526059 #####
+############# Starting Epoch 2 | LR: 1e-05 #############
+Train-2 epoch | loss:0.29943135 | acc:0.9526
+##### Epoch 2 | Loss: 0.0001297903509112075 | acc: 0.8460651256032431 #####
+############# Starting Epoch 3 | LR: 1e-05 #############
+Train-3 epoch | loss:0.26737149 | acc:0.9523
+##### Epoch 3 | Loss: 0.00013007086818106472 | acc: 0.8444080089730654 #####
+############# Starting Epoch 4 | LR: 1e-05 #############
+Train-4 epoch | loss:0.24466227 | acc:0.9532
+##### Epoch 4 | Loss: 0.00013795908307656646 | acc: 0.8467616225928427 #####
+############# Starting Epoch 5 | LR: 1e-05 #############
+Train-5 epoch | loss:0.22529515 | acc:0.9528
+##### Epoch 5 | Loss: 0.00013014771684538573 | acc: 0.8440786710597395 #####
+############# Starting Epoch 6 | LR: 1e-05 #############
+Train-6 epoch | loss:0.20931273 | acc:0.9533
+##### Epoch 6 | Loss: 0.00012952974066138268 | acc: 0.8464514954289505 #####
+############# Starting Epoch 7 | LR: 1e-05 #############
+Train-7 epoch | loss:0.19415947 | acc:0.9530
+##### Epoch 7 | Loss: 0.0001296187110710889 | acc: 0.8458133551153539 #####
+############# Starting Epoch 8 | LR: 1e-05 #############
+Train-8 epoch | loss:0.18225727 | acc:0.9528
+##### Epoch 8 | Loss: 0.00012967253860551864 | acc: 0.8461718311206987 #####
+############# Starting Epoch 9 | LR: 1e-05 #############
+Train-9 epoch | loss:0.17109568 | acc:0.9525
+##### Epoch 9 | Loss: 0.00013065000530332327 | acc: 0.845520260387041 #####

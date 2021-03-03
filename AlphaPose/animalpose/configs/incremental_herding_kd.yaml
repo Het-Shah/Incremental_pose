@@ -6,15 +6,18 @@ ANIMAL_CLASS_INCREMENTAL:
   - "horse"
   - "sheep"
 INCREMENTAL_STEP: 1
-MEMORY: 1000
-MEMORY_TYPE: 'fix'
+MEMORY: 0.1
+MEMORY_TYPE: 'growing'
 SAMPLING:
-  STRATERGY: 'cluster'
+  STRATERGY: 'random'
+  DISTANCE_METRIC: 'eucl'
+  CLUSTER_SAMPLING: 'random'
+  CLUSTER_PROPORTION: 'prop'
   N_CLUSTERS: 5
 DATASET:
-  DATA_ROOT: '/media2/het/data/'
-  IMAGES: '/media2/het/data/cropped_images/'
-  ANNOT: '/media2/het/data/updated_df.csv'
+  DATA_ROOT: '/media2/het/Incremental_pose/data/'
+  IMAGES: '/media2/het/Incremental_pose/data/cropped_images/'
+  ANNOT: '/media2/het/Incremental_pose/data/updated_df.csv'
 DATA_PRESET:
   TYPE: 'simple'
   SIGMA: 2
@@ -27,7 +30,7 @@ DATA_PRESET:
   - 128
 MODEL:
   TYPE: 'FastPose'
-  PRETRAINED: ''
+  PRETRAINED: '/media2/het/AlphaPose/animalpose/exp/39-incremental_herding_kd.yaml/model_Base.pth'
   TRY_LOAD: ''
   NUM_DECONV_FILTERS:
   - 128
@@ -47,9 +50,10 @@ TRAIN:
   BATCH_SIZE: 13
   VAL_BATCH_SIZE: 10
   BEGIN_EPOCH: 0
-  END_EPOCH: 20
+  END_EPOCH: 0
   OPTIMIZER: 'adam'
   LR: 0.0001
+  WEIGHT_DECAY: 0
   LR_FACTOR: 0.1
   LR_STEP:
   - 15
@@ -58,13 +62,15 @@ TRAIN:
   - 19
 TRAIN_INCREMENTAL:
   BASE_DATA_FOR_INCREMENTAL: 0.1
+  AUGMENTATION: 'part'
   BATCH_SIZE: 10
   VAL_BATCH_SIZE: 10
   BEGIN_EPOCH: 0
   END_EPOCH: 10
-  KD_LOSS: False
+  KD_LOSS: False 
   OPTIMIZER: 'adam'
   LR: 0.0001
+  WEIGHT_DECAY: 0
   LR_FACTOR: 0.1
   LR_STEP:
     - 15
