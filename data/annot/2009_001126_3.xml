@@ -1,0 +1,11 @@
+<annotation>
+	<image>2009_001126</image>
+	<voc_id>3</voc_id>
+	<category>cat</category>
+	<visible_bounds height="18.00" width="13.00" xmin="9.00" ymin="83.00" />
+	<keypoints>
+	<keypoint name="L_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Nose" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Throat" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Withers" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="TailBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Knee" visible="1" x="16.27604103088379" y="93.31597137451172" z="0.00" /><keypoint name="R_F_Knee" visible="1" x="14.8292818069458" y="93.0447006225586" z="0.00" /><keypoint name="L_B_Knee" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Knee" visible="0" x="0.00" y="0.00" z="0.00" /></keypoints>
+	<polylinesegments>
+		<segment name="foreground" x="14.19 14.19 14.24 9.97 9.65 10.51 9.01 9.71 13.49 16.53 19.25 19.63 19.52 19.04 18.72 21.49 21.97 21.28 16.91 " y="99.27 96.17 94.14 95.21 93.55 92.70 90.88 83.34 83.55 83.92 84.24 86.17 89.43 92.43 96.01 96.97 98.42 99.33 100.18 " />
+	</polylinesegments>
+</annotation>

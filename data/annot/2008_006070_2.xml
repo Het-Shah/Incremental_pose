@@ -1,0 +1,11 @@
+<annotation>
+	<image>2008_006070</image>
+	<voc_id>2</voc_id>
+	<category>sheep</category>
+	<visible_bounds height="343.00" width="333.00" xmin="140.00" ymin="20.00" />
+	<keypoints>
+	<keypoint name="L_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Nose" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Throat" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Withers" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="TailBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Knee" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Knee" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Knee" visible="1" x="403.125" y="267.4175109863281" z="0.00" /><keypoint name="R_B_Knee" visible="1" x="456.875" y="261.73876953125" z="0.00" /></keypoints>
+	<polylinesegments>
+		<segment name="foreground" x="143.30 208.58 314.66 347.30 357.50 362.60 365.66 345.26 321.80 360.56 389.12 419.72 454.40 435.02 430.94 422.78 411.56 412.58 383.00 374.84 359.54 335.06 328.94 320.78 318.74 296.30 296.30 290.18 286.10 213.68 151.46 139.22 " y="103.85 104.87 112.00 108.94 105.89 92.64 77.35 75.31 47.79 53.91 50.85 53.91 52.89 74.29 90.60 130.35 152.77 152.77 205.77 233.29 251.63 257.75 283.23 325.02 362.73 362.73 334.19 299.54 255.71 261.82 246.54 257.75 " />
+	</polylinesegments>
+</annotation>

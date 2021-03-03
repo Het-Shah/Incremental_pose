@@ -1,0 +1,12 @@
+<annotation>
+	<image>2010_003376</image>
+	<voc_id>4</voc_id>
+	<category>sheep</category>
+	<visible_bounds height="33.00" width="40.00" xmin="273.00" ymin="186.00" />
+	<keypoints>
+		<keypoint name="Withers" visible="1" x="298.62" y="190.00" z="0.00" />
+	<keypoint name="L_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Nose" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Throat" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="TailBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Knee" visible="1" x="278.125" y="208.81668090820312" z="0.00" /><keypoint name="R_F_Knee" visible="1" x="284.375" y="209.2062530517578" z="0.00" /><keypoint name="L_B_Knee" visible="1" x="297.39581298828125" y="212.3229217529297" z="0.00" /><keypoint name="R_B_Knee" visible="1" x="302.08331298828125" y="211.1541748046875" z="0.00" /></keypoints>
+	<polylinesegments>
+		<segment name="foreground" x="274.91 279.41 282.83 284.79 287.52 287.82 290.46 292.41 293.68 293.88 293.98 296.81 299.36 303.66 304.34 304.93 304.93 305.61 306.00 306.49 303.66 301.41 299.55 299.06 297.79 295.54 288.89 285.47 282.73 279.60 276.57 274.72 273.84 273.25 273.25 274.23 274.32 273.05 272.66 272.27 272.37 273.74 274.32 " y="216.13 215.05 212.70 210.25 205.83 205.25 204.27 204.17 207.80 211.23 212.80 213.78 213.78 213.29 212.21 208.68 205.25 201.62 200.93 200.24 194.36 191.91 189.26 188.58 188.18 188.38 189.85 189.16 189.26 190.73 191.91 192.79 195.05 199.75 201.91 206.13 208.58 211.91 213.19 215.74 216.82 216.72 216.13 " />
+	</polylinesegments>
+</annotation>

@@ -1,0 +1,11 @@
+<annotation>
+	<image>2010_005567</image>
+	<voc_id>3</voc_id>
+	<category>sheep</category>
+	<visible_bounds height="40.00" width="45.00" xmin="221.00" ymin="76.00" />
+	<keypoints>
+	<keypoint name="L_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Nose" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Throat" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Withers" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="TailBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Knee" visible="1" x="237.81105041503906" y="103.53370666503906" z="0.00" /><keypoint name="R_F_Knee" visible="1" x="240.82513427734375" y="103.759765625" z="0.00" /><keypoint name="L_B_Knee" visible="1" x="256.19696044921875" y="105.11609649658203" z="0.00" /><keypoint name="R_B_Knee" visible="1" x="263.4307556152344" y="104.89004516601562" z="0.00" /></keypoints>
+	<polylinesegments>
+		<segment name="foreground" x="233.37 234.78 257.87 263.40 263.88 262.11 264.82 261.87 250.68 254.22 252.92 241.50 240.67 241.85 236.08 236.32 237.96 232.55 226.19 221.95 221.71 223.83 224.42 229.72 231.84 " y="79.60 85.07 83.76 86.37 93.62 99.57 104.68 112.88 112.76 106.34 99.21 98.85 105.98 113.12 114.78 111.33 100.52 97.19 86.13 86.85 81.74 80.43 77.81 77.70 78.29 " />
+	</polylinesegments>
+</annotation>
