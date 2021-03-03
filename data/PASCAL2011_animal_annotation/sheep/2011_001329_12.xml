@@ -1,0 +1,11 @@
+<annotation>
+	<image>2011_001329</image>
+	<voc_id>12</voc_id>
+	<category>sheep</category>
+	<visible_bounds height="17.00" width="10.00" xmin="258.00" ymin="108.00" />
+	<keypoints>
+	<keypoint name="L_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Nose" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Throat" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Withers" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="TailBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Knee" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Knee" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Knee" visible="1" x="260.96923828125" y="119.99813079833984" z="0.00" /><keypoint name="R_B_Knee" visible="1" x="265.9927062988281" y="119.99813079833984" z="0.00" /></keypoints>
+	<polylinesegments>
+		<segment name="foreground" x="259.12 266.00 266.12 265.72 265.32 264.24 264.24 264.36 263.16 262.48 261.36 260.48 260.52 260.00 259.76 259.52 259.52 258.80 " y="109.78 109.74 119.25 122.90 123.96 123.69 122.79 122.55 122.83 123.18 123.34 122.75 121.57 121.21 120.90 119.80 118.74 117.84 " />
+	</polylinesegments>
+</annotation>

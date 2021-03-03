@@ -1,0 +1,11 @@
+<annotation>
+	<image>2009_004943</image>
+	<voc_id>13</voc_id>
+	<category>sheep</category>
+	<visible_bounds height="11.00" width="16.00" xmin="212.00" ymin="276.00" />
+	<keypoints>
+	<keypoint name="L_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Nose" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Throat" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Withers" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="TailBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Knee" visible="1" x="222.3307342529297" y="282.55206298828125" z="0.00" /><keypoint name="R_F_Knee" visible="1" x="225.5859375" y="282.55206298828125" z="0.00" /><keypoint name="L_B_Knee" visible="1" x="214.5182342529297" y="282.9861145019531" z="0.00" /><keypoint name="R_B_Knee" visible="1" x="219.4010467529297" y="283.8541564941406" z="0.00" /></keypoints>
+	<polylinesegments>
+		<segment name="foreground" x="224.55 224.99 226.32 226.40 225.99 225.25 225.21 225.18 225.51 224.40 221.81 217.97 217.37 216.04 215.53 214.68 214.64 214.56 213.94 213.82 213.09 214.19 215.56 216.78 218.26 219.22 221.26 223.36 224.33 " y="284.32 283.36 283.25 282.58 282.17 281.95 281.91 280.83 277.49 277.01 276.56 276.67 277.67 277.60 278.53 278.90 280.09 281.35 281.50 282.84 284.03 284.62 285.14 285.62 286.07 285.73 285.44 285.59 284.51 " />
+	</polylinesegments>
+</annotation>

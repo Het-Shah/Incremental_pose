@@ -1,0 +1,15 @@
+<annotation>
+	<image>2008_002304</image>
+	<voc_id>10</voc_id>
+	<category>dog</category>
+	<visible_bounds height="87.00" width="160.00" xmin="68.00" ymin="246.00" />
+	<keypoints>
+		<keypoint name="L_Eye" visible="1" x="82.06" y="257.56" z="0.00" />
+		<keypoint name="L_EarBase" visible="1" x="94.94" y="251.54" z="0.00" />
+		<keypoint name="Withers" visible="1" x="130.62" y="272.55" z="0.00" />
+		<keypoint name="TailBase" visible="1" x="201.00" y="298.71" z="0.00" />
+	<keypoint name="R_Eye" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Nose" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_EarBase" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="Throat" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_F_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Paw" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Elbow" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_F_Knee" visible="1" x="111.25" y="327.5887451171875" z="0.00" /><keypoint name="R_F_Knee" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="L_B_Knee" visible="0" x="0.00" y="0.00" z="0.00" /><keypoint name="R_B_Knee" visible="0" x="0.00" y="0.00" z="0.00" /></keypoints>
+	<polylinesegments>
+		<segment name="foreground" x="68.87 68.87 228.24 227.50 " y="246.01 331.52 332.25 246.38 " />
+	</polylinesegments>
+</annotation>
