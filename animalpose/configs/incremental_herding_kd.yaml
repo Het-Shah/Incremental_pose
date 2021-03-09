@@ -15,9 +15,9 @@ SAMPLING:
   CLUSTER_PROPORTION: 'prop'
   N_CLUSTERS: 5
 DATASET:
-  DATA_ROOT: '/media2/het/Incremental_pose/data/'
-  IMAGES: '/media2/het/Incremental_pose/data/cropped_images/'
-  ANNOT: '/media2/het/Incremental_pose/data/updated_df.csv'
+  DATA_ROOT: '/media/gaurav/Incremental_pose/data/'
+  IMAGES: '/media/gaurav/Incremental_pose/data/cropped_images/'
+  ANNOT: '/media/gaurav/Incremental_pose/data/updated_df.csv'
 DATA_PRESET:
   TYPE: 'simple'
   SIGMA: 2
@@ -30,7 +30,7 @@ DATA_PRESET:
   - 128
 MODEL:
   TYPE: 'FastPose'
-  PRETRAINED: '/media2/het/AlphaPose/animalpose/exp/39-incremental_herding_kd.yaml/model_Base.pth'
+  PRETRAINED: ''
   TRY_LOAD: ''
   NUM_DECONV_FILTERS:
   - 128
@@ -50,7 +50,7 @@ TRAIN:
   BATCH_SIZE: 13
   VAL_BATCH_SIZE: 10
   BEGIN_EPOCH: 0
-  END_EPOCH: 0
+  END_EPOCH: 20
   OPTIMIZER: 'adam'
   LR: 0.0001
   WEIGHT_DECAY: 0

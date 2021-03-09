@@ -104,12 +104,12 @@ class AnimalDatasetCombined(data.Dataset):
         if self.parts_augmentation:
             if os.path.isfile(
                 os.path.join(
-                    "/media2/het/Incremental_pose/data/parts_overlayed/",
+                    "/media2/het/Incremental_pose/data/parts_overlayed_same_class/",
                     self.images[idx][:-4] + ".jpg",
                 )
             ):
                 img_name = os.path.join(
-                    "/media2/het/Incremental_pose/data/parts_overlayed/",
+                    "/media2/het/Incremental_pose/data/parts_overlayed_same_class/",
                     self.images[idx][:-4] + ".jpg",
                 )
             else:
