@@ -761,6 +761,11 @@ def rotate_elbow_knee_limbs(
                     rot_pt_x_paw, rot_pt_y_paw = keypoints[ind[2]][0], keypoints[ind[2]][1] 
 
                     # move on 
+                    keypoints_dict[ind[0]].append(
+                        [keypoints[ind[0]][0], keypoints[ind[0]][1], 1]
+                    )
+                    indices_visited.append(ind[0])
+                    
                     keypoints_dict[ind[1]].append([rot_pt_x, rot_pt_y, 1])
                     indices_visited.append(ind[1])
 

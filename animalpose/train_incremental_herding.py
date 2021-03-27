@@ -529,15 +529,15 @@ def main():
         train_images_list = images_list[: int(0.9 * len(images_list))]
         val_images_list = images_list[int(0.9 * len(images_list)) :]
 
-        train_tempset = AnimalDatasetCombined(
-            cfg.DATASET.IMAGES,
-            cfg.DATASET.ANNOT,
-            train_images_list,
-            input_size=(512, 512),
-            output_size=(128, 128),
-            transforms=torchvision.transforms.Compose([ToTensor()]),
-            train=True,
-        )
+        # train_tempset = AnimalDatasetCombined(
+        #     cfg.DATASET.IMAGES,
+        #     cfg.DATASET.ANNOT,
+        #     train_images_list,
+        #     input_size=(512, 512),
+        #     output_size=(128, 128),
+        #     transforms=torchvision.transforms.Compose([ToTensor()]),
+        #     train=True,
+        # )
 
         val_tempset = AnimalDatasetCombined(
             cfg.DATASET.IMAGES,
@@ -549,20 +549,20 @@ def main():
             train=False,
         )
 
-        # if cfg.TRAIN_INCREMENTAL.AUGMENTATION == "rotation":
-        #     augmented_tempset = AnimalDatasetCombined(
-        #             cfg.DATASET.AUG_IMAGES,
-        #             cfg.DATASET.AUG_ANNOT,
-        #             train_images_list,
-        #             input_size=(512, 512),
-        #             output_size=(128, 128),
-        #             transforms=torchvision.transforms.Compose([ToTensor()]),
-        #             train=True,
-        #         )
-        #     print("Length of Augmented Set: ", len(augmented_tempset))
-        #     train_datasets.append(augmented_tempset)
+        if cfg.TRAIN_INCREMENTAL.AUGMENTATION == "rotation":
+            augmented_tempset = AnimalDatasetCombined(
+                    cfg.DATASET.AUG_IMAGES,
+                    cfg.DATASET.AUG_ANNOT,
+                    train_images_list,
+                    input_size=(512, 512),
+                    output_size=(128, 128),
+                    transforms=torchvision.transforms.Compose([ToTensor()]),
+                    train=True,
+                )
+            print("Length of Augmented Set: ", len(augmented_tempset))
+            train_datasets.append(augmented_tempset)
 
-        train_datasets.append(train_tempset)
+        # train_datasets.append(train_tempset)
         val_datasets.append(val_tempset)
 
         filename_list_classes[animal_class] = []
