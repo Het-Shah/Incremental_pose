@@ -1,37 +1,42 @@
-"""Script for multi-gpu training for incremental learing."""
+# """Script for multi-gpu training for incremental learing."""
 import json
 import os
 from copy import deepcopy
 
-import scipy.linalg as la
-
+import cv2
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-from sklearn.cluster import KMeans
-from sklearn.manifold import TSNE
-from sklearn.decomposition import PCA
+import matplotlib.patches as patches
+from matplotlib import cm
+from PIL import Image
+import PIL.ImageDraw as ImageDraw
 
 from dppy.finite_dpps import FiniteDPP
-from dppy.utils import example_eval_L_linear
 
 import torch
 import torch.nn as nn
 import torchvision
 import torch.utils.data
+import torchvision.models as models
+
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
 
+from torchsummary import summary
+
 from alphapose.models import builder
+
 from alphapose.opt import cfg, logger, opt
 from alphapose.utils.logger import board_writing, debug_writing
 from alphapose.utils.metrics import DataLogger, calc_accuracy
+from alphapose.utils.transforms import get_max_pred_batch
 from transforms_utils import get_max_pred
 from animal_data_loader import AnimalDatasetCombined, ToTensor
 
+import thinplate as tps
+
 from utils import *
-from models import *
 
 num_gpu = torch.cuda.device_count()
 valid_batch = 1 * num_gpu
@@ -40,19 +45,64 @@ if opt.sync:
 else:
     norm_layer = nn.BatchNorm2d
 
-outputs = []
+def dist_acc(dists, thr=0.5):
+    """Calculate accuracy with given input distance."""
+    dist_cal = np.not_equal(dists, -1)
+    num_dist_cal = dist_cal.sum()
+    if num_dist_cal > 0:
+        return np.less(dists[dist_cal], thr).sum() * 1.0 / num_dist_cal
+    else:
+        return -1
 
 
-def model_hook(module, input, output):
-    outputs.append(output.cpu().detach().numpy())
+def calc_dist(preds, target, normalize):
+    """Calculate normalized distances"""
+    preds = preds.astype(np.float32)
+    target = target.astype(np.float32)
+    dists = np.zeros((preds.shape[1], preds.shape[0]))
+
+    for n in range(preds.shape[0]):
+        for c in range(preds.shape[1]):
+            if target[n, c, 0] > 1 and target[n, c, 1] > 1:
+                normed_preds = preds[n, c, :] / normalize[n]
+                normed_targets = target[n, c, :] / normalize[n]
+                dists[c, n] = np.linalg.norm(normed_preds - normed_targets)
+            else:
+                dists[c, n] = -1
+
+    return dists
+
+def calc_accuracy_delta(preds, labels, num_joints=17, hm_w=128, hm_h=128):
+    norm = 1.0
+
+    # preds, _ = get_max_pred_batch(preds)
+    # labels, _ = get_max_pred_batch(labels)
+    norm = np.ones((preds.shape[0], 2)) * np.array([hm_w, hm_h]) / 10
+
+    dists = calc_dist(preds, labels, norm)
+
+    acc = 0
+    sum_acc = 0
+    cnt = 0
+    for i in range(num_joints):
+        acc = dist_acc(dists[i])
+        if acc >= 0:
+            sum_acc += acc
+            cnt += 1
+
+    if cnt > 0:
+        return sum_acc / cnt
+    else:
+        return 0
 
 
-def train(opt, train_loader, m, criterion, optimizer, writer, phase="Train"):
+def train(opt, train_loader, ref_keypoints, m, criterion, optimizer, writer, phase="Train"):
     loss_logger = DataLogger()
     acc_logger = DataLogger()
     m.train()
 
     train_loader = tqdm(train_loader, dynamic_ncols=True)
+    # ref_keypts = torch.FloatTensor(ref_keypoints).cuda().requires_grad_()
 
     for i, (inps, labels, label_masks, _) in enumerate(train_loader):
         if isinstance(inps, list):
@@ -62,20 +112,55 @@ def train(opt, train_loader, m, criterion, optimizer, writer, phase="Train"):
         labels = labels.cuda()
         label_masks = label_masks.cuda()
 
-        output = m(inps)
-
-        if cfg.LOSS.TYPE == "SmoothL1":
-            loss = criterion(output.mul(label_masks), labels.mul(label_masks))
-
-        if cfg.LOSS.get("TYPE") == "MSELoss":
-            loss = 0.5 * criterion(output.mul(label_masks), labels.mul(label_masks))
-
-        acc = calc_accuracy(output.mul(label_masks), labels.mul(label_masks))
-
         if isinstance(inps, list):
             batch_size = inps[0].size(0)
         else:
             batch_size = inps.size(0)
+
+        ref_keypts = np.tile(ref_keypoints, (batch_size, 1, 1))
+        ref_keypts = torch.FloatTensor(ref_keypts).cuda().requires_grad_()
+
+        output = m(inps)
+        output = torch.reshape(output, (output.shape[0], 17, 2))
+
+        # output = output.detach().cpu().numpy()
+        # output = np.reshape(output, (output.shape[0], 17, 3))
+
+        # keypts = [] 
+        # vis = []
+
+        # for i in output:
+        #     temp = []
+        #     temp_pts = []
+        #     for j in i:
+        #         temp_pts.append([j[0], j[1]])
+        #         temp.append([j[2], j[2]])
+        #     vis.append(temp)
+        #     keypts.append(temp_pts)
+
+        # keypts = np.array(keypts)
+        # vis = toornp.array(vis)
+
+        label_masks = torch.squeeze(label_masks, 2)
+
+        out_keypoints = torch.multiply(output + ref_keypts, label_masks).cuda().requires_grad_()
+        
+        labels = labels.detach().cpu().numpy()
+
+        labels, _ = get_max_pred_batch(labels)
+
+        labels = torch.tensor(labels, requires_grad=True).float().cuda()
+        
+        if cfg.LOSS.TYPE == "SmoothL1":
+            loss = criterion(out_keypoints, labels)
+
+        if cfg.LOSS.get("TYPE") == "MSELoss":
+            loss = criterion(out_keypoints, labels)
+
+        out_keypoints = out_keypoints.detach().cpu().numpy()
+        labels = labels.detach().cpu().numpy()
+
+        acc = calc_accuracy_delta(out_keypoints, labels)
 
         loss_logger.update(loss.item(), batch_size)
         acc_logger.update(acc, batch_size)
@@ -107,11 +192,13 @@ def train(opt, train_loader, m, criterion, optimizer, writer, phase="Train"):
     return loss_logger.avg, acc_logger.avg
 
 
-def validate(m, val_loader, opt, cfg, writer, criterion, batch_size=1):
+def validate(m, val_loader, ref_keypoints, opt, cfg, writer, criterion, batch_size=1):
     loss_logger_val = DataLogger()
     acc_logger = DataLogger()
 
     m.eval()
+
+    # ref_keypts = torch.FloatTensor(ref_keypoints).cuda().requires_grad_()
 
     val_loader = tqdm(val_loader, dynamic_ncols=True)
 
@@ -124,10 +211,33 @@ def validate(m, val_loader, opt, cfg, writer, criterion, batch_size=1):
         labels = labels.cuda()
         label_masks = label_masks.cuda()
 
-        output = m(inps)
+        if isinstance(inps, list):
+            batch_size = inps[0].size(0)
+        else:
+            batch_size = inps.size(0)
 
-        loss = criterion(output.mul(label_masks), labels.mul(label_masks))
-        acc = calc_accuracy(output.mul(label_masks), labels.mul(label_masks))
+        ref_keypts = np.tile(ref_keypoints, (batch_size, 1, 1))
+        ref_keypts = torch.FloatTensor(ref_keypts).cuda().requires_grad_()
+
+        output = m(inps)
+        output = torch.reshape(output, (output.shape[0], 17, 2))
+
+        label_masks = torch.squeeze(label_masks, 2)
+
+        out_keypoints = torch.multiply(output + ref_keypts, label_masks).cuda().requires_grad_()
+        
+        labels = labels.detach().cpu().numpy()
+
+        labels, _ = get_max_pred_batch(labels)
+
+        labels = torch.tensor(labels, requires_grad=True).float().cuda()
+
+        loss = criterion(out_keypoints, labels)
+
+        out_keypoints = out_keypoints.detach().cpu().numpy()
+        labels = labels.detach().cpu().numpy()
+
+        acc = calc_accuracy_delta(out_keypoints, labels)
 
         loss_logger_val.update(loss, batch_size)
         acc_logger.update(acc, batch_size)
@@ -142,314 +252,12 @@ def validate(m, val_loader, opt, cfg, writer, criterion, batch_size=1):
     val_loader.close()
     return loss_logger_val.avg, acc_logger.avg
 
-
-def train_kd(opt, train_loader, m, m_prev, criterion, optimizer, writer, phase="Train"):
-    loss_logger = DataLogger()
-    acc_logger = DataLogger()
-    m.train()
-
-    train_loader = tqdm(train_loader, dynamic_ncols=True)
-
-    for i, (inps, labels, label_masks, _) in enumerate(train_loader):
-        if isinstance(inps, list):
-            inps = [inp.cuda().requires_grad_() for inp in inps]
-        else:
-            inps = inps.cuda().requires_grad_()
-        labels = labels.cuda()
-        label_masks = label_masks.cuda()
-
-        output = m(inps)
-
-        output_teacher = m_prev(inps)
-
-        loss_orig = 0.2 * criterion(output.mul(label_masks), labels.mul(label_masks))
-
-        loss_kd = 0.8 * criterion(
-            output.mul(label_masks), output_teacher.mul(label_masks)
-        )
-
-        acc = calc_accuracy(output.mul(label_masks), labels.mul(label_masks))
-
-        # loss = loss_orig + loss_kd
-
-        loss = loss_kd
-
-        if isinstance(inps, list):
-            batch_size = inps[0].size(0)
-        else:
-            batch_size = inps.size(0)
-
-        loss_logger.update(loss.item(), batch_size)
-        acc_logger.update(acc, batch_size)
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        opt.trainIters += 1
-        # Tensorboard
-        if opt.board:
-            board_writing(
-                writer, loss_logger.avg, acc_logger.avg, opt.trainIters, phase
-            )
-
-        # Debug
-        if opt.debug and not i % 10:
-            debug_writing(writer, output, labels, inps, opt.trainIters)
-
-        # TQDM
-        train_loader.set_description(
-            "loss: {loss:.8f} | acc: {acc:.4f}".format(
-                loss=loss_logger.avg, acc=acc_logger.avg
-            )
-        )
-
-    train_loader.close()
-
-    return loss_logger.avg, acc_logger.avg
-
-
-def train_kd_mixup(
-    opt, train_loader, m, m_prev, criterion, optimizer, writer, phase="Train"
-):
-    loss_logger = DataLogger()
-    acc_logger = DataLogger()
-    m.train()
-    m_prev.eval()
-    train_loader = tqdm(train_loader, dynamic_ncols=True)
-
-    for i, (inps, labels, label_masks, _) in enumerate(train_loader):
-        inps_flipped = torch.flip(inps, (3,))
-
-        t = np.random.uniform(0, 1, size=(inps.shape[0],))
-
-        inps_mix_up = []
-
-        for j in range(inps.shape[0]):
-            inps_mix_up.append(
-                t[j] * inps[j].detach().cpu().numpy()
-                + (1 - t[j]) * inps_flipped[j].detach().cpu().numpy()
-            )
-
-        inps_mix_up = np.array(inps_mix_up)
-
-        inps_mix_up = torch.FloatTensor(inps_mix_up)
-
-        if isinstance(inps, list):
-            inps = [inp.cuda().requires_grad_() for inp in inps]
-            inps_mix_up = [inp.cuda().requires_grad_() for inp in inps_mix_up]
-        else:
-            inps = inps.cuda().requires_grad_()
-            inps_mix_up = inps_mix_up.cuda().requires_grad_()
-
-        labels = labels.cuda()
-        label_masks = label_masks.cuda()
-
-        output = m(inps)
-
-        loss_gt = criterion(output.mul(label_masks), labels.mul(label_masks))
-
-        output_teacher = m_prev(inps_mix_up)
-        output = m(inps_mix_up)
-
-        loss_kd = criterion(output.mul(label_masks), output_teacher.mul(label_masks))
-
-        acc = calc_accuracy(output.mul(label_masks), labels.mul(label_masks))
-
-        loss = 0.25 * loss_kd + 0.5 * loss_gt
-
-        if isinstance(inps, list):
-            batch_size = 2 * inps[0].size(0)
-        else:
-            batch_size = 2 * inps.size(0)
-
-        loss_logger.update(loss.item(), batch_size)
-        acc_logger.update(acc, batch_size)
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        opt.trainIters += 1
-        # Tensorboard
-        if opt.board:
-            board_writing(
-                writer, loss_logger.avg, acc_logger.avg, opt.trainIters, phase
-            )
-
-        # Debug
-        if opt.debug and not i % 10:
-            debug_writing(writer, output, labels, inps, opt.trainIters)
-
-        # TQDM
-        train_loader.set_description(
-            "loss: {loss:.8f} | acc: {acc:.4f}".format(
-                loss=loss_logger.avg, acc=acc_logger.avg
-            )
-        )
-
-    train_loader.close()
-
-    return loss_logger.avg, acc_logger.avg
-
-
-def train_kd_mixup_2(
-    opt,
-    train_loader,
-    kd_train_loader,
-    m,
-    m_prev,
-    criterion,
-    optimizer,
-    writer,
-    phase="Train",
-):
-    loss_logger = DataLogger()
-    acc_logger = DataLogger()
-    m.train()
-    m_prev.eval()
-    train_loader = tqdm(zip(train_loader, kd_train_loader), dynamic_ncols=True)
-
-    for (
-        i,
-        (
-            (inps_new, labels_new, label_masks_new, _),
-            (inps_old, labels_old, label_masks_old, idx),
-        ),
-    ) in enumerate(train_loader):
-        inps_flipped = torch.flip(inps_old, (3,))
-
-        t = np.random.uniform(0, 1, size=(inps_old.shape[0],))
-
-        inps_mix_up = []
-        label_masks_mixup = []
-
-        for j in range(inps_old.shape[0]):
-            inps_mix_up.append(
-                t[j] * inps_old[j].detach().cpu().numpy()
-                + (1 - t[j]) * inps_flipped[j].detach().cpu().numpy()
-            )
-            label_masks_mixup.append(
-                t[j] * label_masks_old[j].detach().cpu().numpy()
-                + (1 - t[j]) * label_masks_old[j].detach().cpu().numpy()
-            )
-
-        inps_mix_up = np.array(inps_mix_up)
-        label_masks_mixup = np.array(label_masks_mixup)
-
-        inps_mix_up = torch.FloatTensor(inps_mix_up)
-        label_masks_mixup = torch.FloatTensor(label_masks_mixup)
-
-        if isinstance(inps_old, list):
-            inps_old = [inp.cuda().requires_grad_() for inp in inps_old]
-            inps_mix_up = [inp.cuda().requires_grad_() for inp in inps_mix_up]
-            inps_new = [inp.cuda().requires_grad_() for inp in inps_new]
-        else:
-            inps_old = inps_old.cuda().requires_grad_()
-            inps_mix_up = inps_mix_up.cuda().requires_grad_()
-            inps_new = inps_new.cuda().requires_grad_()
-
-        labels_old = labels_old.cuda()
-        label_masks_old = label_masks_old.cuda()
-        label_masks_mixup = label_masks_mixup.cuda()
-
-        labels_new = labels_new.cuda()
-        label_masks_new = label_masks_new.cuda()
-
-        output_new = m(inps_new)
-
-        output_old = m(inps_old)
-
-        loss_new = criterion(
-            output_new.mul(label_masks_new), labels_new.mul(label_masks_new)
-        )
-
-        loss_gt = criterion(
-            output_old.mul(label_masks_old), labels_old.mul(label_masks_old)
-        )
-
-        output_teacher = m_prev(inps_mix_up)
-        output = m(inps_mix_up)
-
-        loss_kd = criterion(
-            output.mul(label_masks_mixup), output_teacher.mul(label_masks_mixup)
-        )
-
-        acc = calc_accuracy(
-            output_new.mul(label_masks_new), labels_new.mul(label_masks_new)
-        )
-
-        loss = 0.25 * loss_kd + 0.5 * loss_gt + 0.5 * loss_new
-
-        if isinstance(inps_old, list):
-            batch_size = inps_old[0].size(0)
-        else:
-            batch_size = inps_old.size(0)
-
-        loss_logger.update(loss.item(), batch_size)
-        acc_logger.update(acc, batch_size)
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        opt.trainIters += 1
-        # Tensorboard
-        if opt.board:
-            board_writing(
-                writer, loss_logger.avg, acc_logger.avg, opt.trainIters, phase
-            )
-
-        # Debug
-        if opt.debug and not i % 10:
-            debug_writing(writer, output, labels, inps, opt.trainIters)
-
-        # TQDM
-        train_loader.set_description(
-            "loss: {loss:.8f} | acc: {acc:.4f}".format(
-                loss=loss_logger.avg, acc=acc_logger.avg
-            )
-        )
-
-    train_loader.close()
-
-    return loss_logger.avg, acc_logger.avg
-
-
-def feature_extract(model, dataloader):
-    model.eval()
-    global outputs
-
-    outputs = []
-    indices = []
-    with torch.no_grad():
-        for i, (inps, labels, label_masks, idx) in enumerate(dataloader):
-            if isinstance(inps, list):
-                inps = [inp.cuda() for inp in inps]
-            else:
-                inps = inps.cuda()
-
-            out = model(inps)
-            indices.append(idx)
-
-        outputs = [item for sublist in outputs for item in sublist]
-        outputs = np.array(outputs)
-
-        indices = [item for sublist in indices for item in sublist]
-        indices = np.array(indices)
-
-    return outputs, indices
-
-
 def main():
     logger.info("******************************")
     logger.info(opt)
     logger.info("******************************")
     logger.info(cfg)
     logger.info("******************************")
-
-    # List of keypoints used
-    # 0-2, 1-2, 0-3, 1-3, 5-13, 13-6, 8-14, 14-7, 11-15, 15-9, 12-16, 16-10  => 12 limbs
 
     keypoint_names = [
         "L_Eye",
@@ -471,22 +279,17 @@ def main():
         "R_B_Knee",
     ]
 
-    # Model Initialize
-    m = preset_model(cfg)
+    m = models.resnet50(pretrained=True)
+    m.avgpool = nn.Sequential()
+    m.fc = nn.Sequential(nn.Flatten(),
+                        nn.Linear(2048*16*16, 34))
+
     m = nn.DataParallel(m).cuda()
 
-    # Register forward hook
-    # m.module.suffle1.register_forward_hook(model_hook)
+    ref_keypoints,_,_ = get_keypoints("2009_000553_1.xml", csv_file="/media/gaurav/Incremental_pose/data/updated_df.csv")
 
-    if cfg.MODEL.PRETRAINED:
-        logger.info(f"Loading model from {cfg.MODEL.PRETRAINED}...")
-        m.load_state_dict(torch.load(cfg.MODEL.PRETRAINED))
-
-    if len(cfg.ANIMAL_CLASS_INCREMENTAL) % cfg.INCREMENTAL_STEP != 0:
-        print(
-            "Number of classes for incremental step is not a multiple of the number of incremental steps!"
-        )
-        return
+    ref_keypoints = np.array([[i[0], i[1]] for i in ref_keypoints])
+    ref_keypoints = np.expand_dims(ref_keypoints, axis=0)
 
     if cfg.LOSS.TYPE == "SmoothL1":
         criterion = nn.SmoothL1Loss().cuda()
@@ -549,19 +352,6 @@ def main():
             train=False,
         )
 
-        # if cfg.TRAIN_INCREMENTAL.AUGMENTATION == "rotation":
-        #     augmented_tempset = AnimalDatasetCombined(
-        #             cfg.DATASET.AUG_IMAGES,
-        #             cfg.DATASET.AUG_ANNOT,
-        #             train_images_list,
-        #             input_size=(512, 512),
-        #             output_size=(128, 128),
-        #             transforms=torchvision.transforms.Compose([ToTensor()]),
-        #             train=True,
-        #         )
-        #     print("Length of Augmented Set: ", len(augmented_tempset))
-        #     train_datasets.append(augmented_tempset)
-
         train_datasets.append(train_tempset)
         val_datasets.append(val_tempset)
 
@@ -571,7 +361,7 @@ def main():
 
     base_trainset = torch.utils.data.ConcatDataset(train_datasets)
     base_train_loader = torch.utils.data.DataLoader(
-        base_trainset, batch_size=cfg.TRAIN.BATCH_SIZE * num_gpu, shuffle=True
+        base_trainset, batch_size=cfg.TRAIN.BATCH_SIZE, shuffle=True
     )
 
     base_valset = torch.utils.data.ConcatDataset(val_datasets)
@@ -599,7 +389,7 @@ def main():
         # Training
 
         train_loss, train_acc = train(
-            opt, base_train_loader, m, criterion, optimizer, writer, phase="Base_Train"
+            opt, base_train_loader, ref_keypoints, m, criterion, optimizer, writer, phase="Base_Train"
         )
         logger.epochInfo("Base_Train", opt.epoch, train_loss, train_acc)
 
@@ -610,6 +400,7 @@ def main():
             val_loss, val_acc = validate(
                 m,
                 base_val_loader,
+                ref_keypoints,
                 opt,
                 cfg,
                 writer,
@@ -801,41 +592,8 @@ def main():
 
                 images_list = []
                 for j in keypoint_list_clusters:
-                    images_list.append(keypoints_to_fname[str(j)])
+                    images_list.append(keypoints_to_fname[str(j)])                    
 
-                # print(images_list)
-                # save_images(
-                #     images_list[:5],
-                #     images_path=cfg.DATASET.IMAGES,
-                #     annot_path=cfg.DATASET.ANNOT,
-                #     save_dir="./exp/{}-{}/images_visualizations_dpp/".format(
-                #         opt.exp_id, cfg.FILE_NAME
-                #     ),
-                #     animal_class=animal_class,
-                # )
-
-                # cnt = 0 
-                # images_not_selected = []
-                # for f in fname_list:
-                #     if not f in images_list:
-                #         images_not_selected.append(f)
-                #         cnt+=1 
-                    
-                #     if cnt == 5: 
-                #         break
-
-                # print(images_not_selected)
-
-                # save_images(
-                #     images_not_selected[:5],
-                #     images_path=cfg.DATASET.IMAGES,
-                #     annot_path=cfg.DATASET.ANNOT,
-                #     save_dir="./exp/{}-{}/images_visualizations_dpp_2/".format(
-                #         opt.exp_id, cfg.FILE_NAME
-                #     ),
-                #     animal_class=animal_class,
-                # )
-                    
             if cfg.SAMPLING.STRATERGY == "random":
                 images_list = fname_list[:samples_per_class]
                 del animal_list
@@ -1373,21 +1131,6 @@ def main():
         best_model_weights,
         "./exp/{}-{}/final_weights.pth".format(opt.exp_id, cfg.FILE_NAME),
     )
-
-
-def preset_model(cfg):
-    if cfg.MODEL.TYPE == "custom":
-        model = DeepLabCut()
-    else:
-        model = builder.build_sppe(cfg.MODEL, preset_cfg=cfg.DATA_PRESET)
-
-    logger.info("Create new model")
-    logger.info("=> init weights")
-    if cfg.MODEL.TYPE != "custom":
-        model._initialize()
-
-    return model
-
 
 if __name__ == "__main__":
     main()

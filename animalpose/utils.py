@@ -1,7 +1,10 @@
 import os
 import cv2
 import json
+import shutil
+import random
 from tqdm import tqdm
+from copy import deepcopy
 
 import numpy as np
 import pandas as pd
@@ -12,8 +15,14 @@ import matplotlib.pyplot as plt
 import torch
 import torchvision
 
-
 from animal_data_loader import AnimalDatasetCombined, ToTensor
+
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib import cm
+
+import thinplate as tps
+from ray.util.multiprocessing import Pool
 
 
 def L2_dist(v1, v2):
@@ -279,7 +288,7 @@ def limb_maps(pose_points, vis):
     return gauss_map, labels
 
 
-def get_keypoints(fname):
+def get_keypoints(fname, csv_file="/media2/het/Incremental_pose/data/updated_df.csv"):
     keypoint_names = [
         "L_Eye",
         "R_Eye",
@@ -303,7 +312,7 @@ def get_keypoints(fname):
     keypoints = []
     vis = []
 
-    annot_df = pd.read_csv("/media2/het/Incremental_pose/data/updated_df.csv")
+    annot_df = pd.read_csv(csv_file)
 
     temp = annot_df.loc[annot_df["filename"] == fname]
     for keypt in keypoint_names:
@@ -653,6 +662,274 @@ def generate_part_augmentation(
         )
 
 
+def f(index):
+    return index
+
+
+def warp_image_cv(img, c_src, c_dst, dshape=None):
+    dshape = dshape or img.shape
+    theta = tps.tps_theta_from_points(c_src, c_dst, reduced=True)
+    grid = tps.tps_grid(theta, c_dst, dshape)
+    mapx, mapy = tps.tps_grid_to_remap(grid, img.shape)
+    return cv2.remap(img, mapx, mapy, cv2.INTER_CUBIC)
+
+
+def rotate_elbow_knee_limbs(
+    input_dir="/media/gaurav/Incremental_pose/data/cropped_images/",
+    output_dir="/media/gaurav/Incremental_pose/data/rotated_images/",
+    input_csv_file="/media/gaurav/Incremental_pose/data/updated_df.csv",
+    output_csv_file="/media/gaurav/Incremental_pose/data/updated_df_rotated.csv",
+    animal_class=None,
+):
+    if not os.path.exists(output_dir):
+        #     shutil.rmtree(output_dir)
+        os.mkdir(output_dir)
+
+    # indices_to_be_rotated = [(5,13), (8,14), (11, 15), (12, 16)]
+    # indices_not_to_be_rotated = [0, 1, 2, 3, 4, 6, 7, 9, 10]
+    indices_to_be_rotated = [
+        (5, 13, 6),
+        # (5, 6),
+        (8, 14, 7),
+        # (8, 7),
+        (11, 15, 9),
+        # (11, 9),
+        (12, 16, 10),
+        # (12, 10),
+    ]
+    indices_not_to_be_rotated = [0, 1, 2, 3, 4]
+
+    keypoints_dict = {}
+    for i in range(17):
+        keypoints_dict[i] = []
+
+    df = pd.read_csv(input_csv_file)
+
+    if animal_class:
+        df = df.loc[df["class"] == animal_class]
+
+    classes = list(df["class"])
+    fname_list = list(df["filename"])
+
+    cnt = 0
+    pool = Pool()
+
+    for fname in pool.map(f, fname_list):
+    # for fname in fname_list:
+        print(fname)
+        img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))
+        keypoints, _, vis = get_keypoints(fname, csv_file=input_csv_file)
+
+        c_src = [
+            [0.0, 0.0],
+            [1.0, 0.0],
+            [1.0, 1.0],
+            [0.0, 1.0],
+        ]
+
+        c_dst = [
+            [0.0, 0.0],
+            [1.0, 0.0],
+            [1.0, 1.0],
+            [0.0, 1.0],
+        ]
+
+        indices_visited = []
+
+        for ind in indices_to_be_rotated:
+            if vis[ind[0]] == 1 and vis[ind[1]] == 1 and vis[ind[2]] == 1:
+                angle = random.uniform(0.25, 0.6)
+                # angle = 0.25
+                rot_pt_x, rot_pt_y = rotate_about_pt(
+                    keypoints[ind[1]][0],
+                    keypoints[ind[1]][1],
+                    keypoints[ind[0]][0],
+                    keypoints[ind[0]][1],
+                    angle,
+                )
+
+                rot_pt_x_paw, rot_pt_y_paw = rotate_about_pt(
+                    keypoints[ind[2]][0],
+                    keypoints[ind[2]][1],
+                    keypoints[ind[0]][0],
+                    keypoints[ind[0]][1],
+                    angle,
+                )
+
+                if rot_pt_x < 0 or rot_pt_y < 0 or rot_pt_x_paw < 0 or rot_pt_y_paw < 0:
+                    rot_pt_x, rot_pt_y = keypoints[ind[1]][0], keypoints[ind[1]][1]
+                    rot_pt_x_paw, rot_pt_y_paw = keypoints[ind[2]][0], keypoints[ind[2]][1] 
+
+                    # move on 
+                    keypoints_dict[ind[1]].append([rot_pt_x, rot_pt_y, 1])
+                    indices_visited.append(ind[1])
+
+                    keypoints_dict[ind[2]].append([rot_pt_x_paw, rot_pt_y_paw, 1])
+                    indices_visited.append(ind[2])
+                    continue
+
+                ## Original Keypoints
+                c_src.append(
+                    [keypoints[ind[0]][0] / 512.0, keypoints[ind[0]][1] / 512.0]
+                )
+
+                c_src.append(
+                    [keypoints[ind[1]][0] / 512.0, keypoints[ind[1]][1] / 512.0]
+                )
+
+                c_src.append(
+                    [keypoints[ind[2]][0] / 512.0, keypoints[ind[2]][1] / 512.0]
+                )
+
+                ## Keypoints after rotating them by a random angle
+                c_dst.append(
+                    [keypoints[ind[0]][0] / 512.0, keypoints[ind[0]][1] / 512.0]
+                )
+                c_dst.append([rot_pt_x / 512.0, rot_pt_y / 512.0])
+                c_dst.append([rot_pt_x_paw / 512.0, rot_pt_y / 512.0])
+
+                if not ind[0] in indices_visited:
+                    keypoints_dict[ind[0]].append(
+                        [keypoints[ind[0]][0], keypoints[ind[0]][1], 1]
+                    )
+                    indices_visited.append(ind[0])
+
+                if not ind[1] in indices_visited:
+                    keypoints_dict[ind[1]].append([rot_pt_x, rot_pt_y, 1])
+                    indices_visited.append(ind[1])
+
+                if not ind[2] in indices_visited:
+                    keypoints_dict[ind[2]].append([rot_pt_x_paw, rot_pt_y_paw, 1])
+                    indices_visited.append(ind[2])
+
+            # elif vis[ind[0]] == 0 and vis[ind[1]] == 1:
+            #     if not ind[1] in indices_visited:
+            #         keypoints_dict[ind[1]].append(
+            #             [keypoints[ind[1]][0], keypoints[ind[1]][1], 1]
+            #         )
+            #         indices_visited.append(ind[1])
+
+            #     if not ind[0] in indices_visited:
+            #         keypoints_dict[ind[0]].append([0, 0, 0])
+            #         indices_visited.append(ind[0])
+
+            # elif vis[ind[0]] == 1 and vis[ind[0]] == 0:
+            #     if not ind[1] in indices_visited:
+            #         keypoints_dict[ind[1]].append([0, 0, 0])
+            #         indices_visited.append(ind[1])
+
+            #     if not ind[0] in indices_visited:
+            #         keypoints_dict[ind[0]].append(
+            #             [keypoints[ind[0]][0], keypoints[ind[0]][1], 1]
+            #         )
+            #         indices_visited.append(ind[0])
+
+            else:
+                if not ind[0] in indices_visited:
+                    # keypoints_dict[ind[0]].append([0, 0, 0])
+                    keypoints_dict[ind[0]].append([keypoints[ind[0]][0], keypoints[ind[0]][1], vis[ind[0]]])
+                    indices_visited.append(ind[0])
+
+                if not ind[1] in indices_visited:
+                    # keypoints_dict[ind[0]].append([0, 0, 0])
+                    keypoints_dict[ind[1]].append([keypoints[ind[1]][0], keypoints[ind[1]][1], vis[ind[1]]])
+                    indices_visited.append(ind[1])
+
+                if not ind[2] in indices_visited:
+                    # keypoints_dict[ind[0]].append([0, 0, 0])
+                    keypoints_dict[ind[2]].append([keypoints[ind[2]][0], keypoints[ind[2]][1], vis[ind[2]]])
+                    indices_visited.append(ind[2])
+
+        for ind in indices_not_to_be_rotated:
+            if vis[ind] == 1:
+                c_src.append([keypoints[ind][0] / 512.0, keypoints[ind][1] / 512.0])
+                c_dst.append([keypoints[ind][0] / 512.0, keypoints[ind][1] / 512.0])
+                keypoints_dict[ind].append([keypoints[ind][0], keypoints[ind][1], 1])
+
+            else:
+                keypoints_dict[ind].append([0, 0, 0])
+
+        c_src = np.array(c_src)
+        c_dst = np.array(c_dst)
+        # try:
+        warped = warp_image_cv(img, c_src, c_dst, dshape=(512, 512))
+
+        img2gray = cv2.cvtColor(warped,cv2.COLOR_BGR2GRAY)
+        ret, mask = cv2.threshold(img2gray, 10, 255, cv2.THRESH_BINARY)
+        mask_inv = cv2.bitwise_not(mask)
+
+        dst = cv2.inpaint(warped,mask_inv,3,cv2.INPAINT_TELEA)
+
+        cv2.imwrite(os.path.join(output_dir, fname[:-4] + ".jpg"), dst)
+
+        # except:2010_005241_1_fn.jpg
+        #     img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))
+        #     cv2.imwrite(os.path.join(output_dir, fname[:-4] + ".jpg"), img)
+
+    indices_to_keypoints_dict = {
+        0: "L_Eye",
+        1: "R_Eye",
+        2: "Nose",
+        3: "L_EarBase",
+        4: "R_EarBase",
+        5: "L_F_Elbow",
+        6: "L_F_Paw",
+        7: "R_F_Paw",
+        8: "R_F_Elbow",
+        9: "L_B_Paw",
+        10: "R_B_Paw",
+        11: "L_B_Elbow",
+        12: "R_B_Elbow",
+        13: "L_F_Knee",
+        14: "R_F_Knee",
+        15: "L_B_Knee",
+        16: "R_B_Knee",
+    }
+
+    data_dict = {}
+
+    keypoint_names = [
+        "L_Eye",
+        "R_Eye",
+        "Nose",
+        "L_EarBase",
+        "R_EarBase",
+        "L_F_Elbow",
+        "L_F_Paw",
+        "R_F_Paw",
+        "R_F_Elbow",
+        "L_B_Paw",
+        "R_B_Paw",
+        "L_B_Elbow",
+        "R_B_Elbow",
+        "L_F_Knee",
+        "R_F_Knee",
+        "L_B_Knee",
+        "R_B_Knee",
+    ]
+
+    data_dict["filename"] = fname_list
+    data_dict["class"] = classes
+
+    for keypt in keypoint_names:
+        data_dict[keypt + "_x"] = []
+        data_dict[keypt + "_y"] = []
+        data_dict[keypt + "_visible"] = []
+
+    for i in keypoints_dict.keys():
+        keypt = indices_to_keypoints_dict[i]
+        for d in keypoints_dict[i]:
+            data_dict[keypt + "_x"].append(d[0])
+            data_dict[keypt + "_y"].append(d[1])
+            data_dict[keypt + "_visible"].append(d[2])
+
+    for k in data_dict.keys():
+        print(f"Length of {k} keypoints list is : {len(data_dict[k])}")
+
+    final_df = pd.DataFrame(data_dict)
+    final_df.to_csv(output_csv_file, index=None)
+
+
 class EarlyStopping(object):
     def __init__(self, mode="min", min_delta=0, patience=10, percentage=False):
         self.mode = mode
@@ -699,4 +976,3 @@ class EarlyStopping(object):
                 self.is_better = lambda a, best: a < best - (best * min_delta / 100)
             if mode == "max":
                 self.is_better = lambda a, best: a > best + (best * min_delta / 100)
-
