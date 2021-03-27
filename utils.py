@@ -11,7 +11,12 @@ import matplotlib.patches as patches
 
 import xml.etree.ElementTree as ET
 
-def get_transform(center, scale, res, rot=0):
+from ray.util.multiprocessing import Pool
+
+def f(index):
+  return index
+
+def get_transform(center, scale, res, pad_scale=2, rot=0):
     """
     General image processing functions
     """
@@ -50,7 +55,7 @@ def transform(pt, center, scale, res, invert=0, rot=0):
     new_pt = np.dot(t, new_pt)
     return new_pt[:2].astype(int) + 1
 
-def crop(img, center, scale, res, rot=0):
+def crop(img, center, scale, res, pad_scale=2, rot=0):
     # Preprocessing for efficient cropping
     ht, wd = img.shape[0], img.shape[1]
     sf = scale * 200.0 / res[0]
@@ -74,7 +79,7 @@ def crop(img, center, scale, res, rot=0):
     br = np.array(transform(res, center, scale, res, invert=1))
 
     # Padding so that when rotated proper amount of context is included
-    pad = int(np.linalg.norm(br - ul) / 2 - float(br[1] - ul[1]) / 2)
+    pad = int(np.linalg.norm(br - ul) / pad_scale - float(br[1] - ul[1]) / pad_scale)
     if not rot == 0:
         ul -= pad
         br += pad
@@ -116,8 +121,8 @@ def move_files(PATH="./data/PASCAL_VOC_2012/", dest="./data/images"):
 def xml_to_df(PATH="./data/annot"):
   files = glob.glob(PATH + '/**/*.xml', recursive=True)
   keypoint_names = ['L_Eye', 'R_Eye', 'Nose', 'L_EarBase', 'R_EarBase', 'Throat', 'Withers', 'TailBase', 
-'L_F_Elbow', 'L_F_Paw', 'R_F_Paw', 'R_F_Elbow', 'L_B_Paw', 'R_B_Paw', 'L_B_Elbow', 'R_B_Elbow', 'L_F_Knee', 
-'R_F_Knee', 'L_B_Knee', 'R_B_Knee']
+  'L_F_Elbow', 'L_F_Paw', 'R_F_Paw', 'R_F_Elbow', 'L_B_Paw', 'R_B_Paw', 'L_B_Elbow', 'R_B_Elbow', 'L_F_Knee', 
+  'R_F_Knee', 'L_B_Knee', 'R_B_Knee']
   data = {}
   data['filename'] = []
   data['class'] = []
@@ -131,7 +136,9 @@ def xml_to_df(PATH="./data/annot"):
     data[i+"_visible"] = []
   for f in files:
     root = ET.parse(f).getroot()
-    data['filename'].append(f[13:])
+
+    ##### MUST CHECK THIS based on input directories ######
+    data['filename'].append(f[42:])
     
     for i in root.findall('category'):
       cls = i.text
@@ -184,7 +191,8 @@ def generate_cropped_images_and_keypoints_df(annot_df, src="./data/images/", des
       img = cv2.imread(src + annot_df['filename'][i][:11]+".jpg")
 
       ht, wd, cc = img.shape
-
+      
+      cv2.imwrite("temp.png", img)
       # create new image of desired size for padding.
       ww = 1000
       hh = 1000
@@ -351,9 +359,194 @@ def generate_cropped_images_and_keypoints_df(annot_df, src="./data/images/", des
   return updated_df
 
 
+def generate_cropped_images_and_keypoints_df_without_zero_padding(annot_df, src="./data/images/", dest="./data/cropped_images/", final_img_size=512):
+  if not os.path.exists(dest):
+    os.mkdir(dest)
+
+  updated_data = {}
+
+  updated_data['filename'] = []
+  updated_data['class'] = []
+
+  keypoint_names = ['L_Eye', 'R_Eye', 'Nose', 'L_EarBase', 'R_EarBase', 'Throat', 'Withers', 'TailBase', 'L_F_Elbow', 'L_F_Paw', 'R_F_Paw', 'R_F_Elbow', 'L_B_Paw', 'R_B_Paw', 'L_B_Elbow', 'R_B_Elbow', 'L_F_Knee', 'R_F_Knee', 'L_B_Knee', 'R_B_Knee']
+
+  for i in keypoint_names:
+    updated_data[i+'_x'] = []
+    updated_data[i+'_y'] = []
+    updated_data[i+'_visible'] = []
+
+  # pool = Pool()
+
+  # for i in pool.map(f, range(len(annot_df))):
+  for i in range(len(annot_df)):
+    updated_data['filename'].append(annot_df['filename'][i])
+    updated_data['class'].append(annot_df['class'][i])
+
+    xmin_bbox = int(annot_df['xmin_bbox'][i])
+    ymin_bbox = int(annot_df['ymin_bbox'][i])
+    height_bbox = int(annot_df['height_bbox'][i])
+    width_bbox = int(annot_df['width_bbox'][i])
+
+    print(src + annot_df['filename'][i][:11]+".jpg")
+    img = cv2.imread(src + annot_df['filename'][i][:11]+".jpg")
+
+    ht, wd, cc = img.shape
+    # create new image of desired size for padding.
+    ww = 1000
+    hh = 1000
+    color = (0,0,0)
+    result = np.full((hh,ww,cc), color, dtype=np.uint8)
+
+    # compute center offset
+    xx = (ww - wd) // 2
+    yy = (hh - ht) // 2
+
+    # copy img image into center of result image
+    result[yy:yy+ht, xx:xx+wd] = img
+
+    finalXs = []
+    finalYs = []
+    finalVis = []
+    dir1 = (width_bbox - height_bbox) // 2
+
+    cropped = result[ymin_bbox+yy:ymin_bbox+height_bbox+yy, xmin_bbox+xx:xmin_bbox+width_bbox+xx]
+    cropped = cv2.resize(cropped, (512, 512))
+    for keypt in keypoint_names:
+      newX = int((512/width_bbox) * (int(annot_df[keypt+'_x'][i])-xmin_bbox))
+      newY = int((512/height_bbox) * (int(annot_df[keypt+'_y'][i])-ymin_bbox))
+
+      if int(annot_df[keypt+'_x'][i]) == 0 and int(annot_df[keypt+'_y'][i]) == 0:
+        finalXs.append(0)
+        finalYs.append(0)
+        finalVis.append(int(annot_df[keypt+'_visible'][i]))
+        continue
+      finalXs.append(max(0,newX))
+      finalYs.append(max(0,newY))
+      finalVis.append(int(annot_df[keypt+'_visible'][i]))
+
+    cv2.imwrite((dest + annot_df['filename'][i][:-4]+".jpg"), cropped)
+
+    cnt = 0
+    for keypt in keypoint_names:
+      updated_data[keypt+'_x'].append(finalXs[cnt])
+      updated_data[keypt+'_y'].append(finalYs[cnt])
+      updated_data[keypt+'_visible'].append(finalVis[cnt])
+      cnt+=1
+
+    # flip image
+
+    flipped_img = cv2.flip(cropped,1)
+    updated_data['filename'].append(annot_df['filename'][i][:-4]+'_f.xml')
+    updated_data['class'].append(annot_df['class'][i])
+
+    flipped_Xs = []
+    flipped_Ys = []
+    flipped_vis = []
+
+    for j in range(len(finalXs)):
+      flipped_Xs.append(final_img_size-finalXs[j])
+      flipped_Ys.append(finalYs[j])
+      flipped_vis.append(finalVis[j])
+
+    cnt = 0
+    for keypt in keypoint_names:
+      updated_data[keypt+'_x'].append(flipped_Xs[cnt])
+      updated_data[keypt+'_y'].append(flipped_Ys[cnt])
+      updated_data[keypt+'_visible'].append(flipped_vis[cnt])
+      cnt+=1
+
+    cv2.imwrite((dest+annot_df['filename'][i][:-4]+"_f.jpg"), flipped_img)
+
+    # add noise
+
+    noise = np.random.randint(0, 10, (final_img_size,final_img_size,3))
+    noisy_img = noise + cropped
+
+    updated_data['filename'].append(annot_df['filename'][i][:-4]+'_n.xml')
+    updated_data['class'].append(annot_df['class'][i])
+
+    cnt = 0
+    for keypt in keypoint_names:
+      updated_data[keypt+'_x'].append(finalXs[cnt])
+      updated_data[keypt+'_y'].append(finalYs[cnt])
+      updated_data[keypt+'_visible'].append(finalVis[cnt])
+      cnt+=1
+
+    cv2.imwrite((dest+annot_df['filename'][i][:-4]+"_n.jpg"), noisy_img)
+
+    # flipped_noisy_img
+
+    flipped_noisy_img = cv2.flip(noisy_img,1)
+    updated_data['filename'].append(annot_df['filename'][i][:-4]+'_fn.xml')
+    updated_data['class'].append(annot_df['class'][i])
+
+    flipped_Xs = []
+    flipped_Ys = []
+    flipped_vis = []
+
+    for j in range(len(finalXs)):
+      flipped_Xs.append(final_img_size-finalXs[j])
+      flipped_Ys.append(finalYs[j])
+      flipped_vis.append(finalVis[j])
+
+    cnt = 0
+    for keypt in keypoint_names:
+      updated_data[keypt+'_x'].append(flipped_Xs[cnt])
+      updated_data[keypt+'_y'].append(flipped_Ys[cnt])
+      updated_data[keypt+'_visible'].append(flipped_vis[cnt])
+      cnt+=1
+
+    cv2.imwrite((dest+annot_df['filename'][i][:-4]+"_fn.jpg"), flipped_noisy_img)
+
+    # rotate
+    updated_data['filename'].append(annot_df['filename'][i][:-4]+'_r.xml')
+    updated_data['class'].append(annot_df['class'][i])
+
+    c = (final_img_size/2,final_img_size/2)
+
+    s = final_img_size/200.0 * 1.5
+    r = 0
+    sf = 0.2
+    rf = 2
+    s = s*(np.random.randn(1).dot(sf)+1).clip(1-sf, 1+sf)[0]
+    r = np.random.randn(1).dot(rf).clip(-2*rf, 2*rf)[0]
+
+    rot_img = crop(cropped, c, s, [final_img_size,final_img_size], pad_scale=5, rot=r)
+
+    cnt = 0
+    for keypt in keypoint_names:
+      if finalVis[cnt] == 0:
+        temp = [0.0, 0.0, 0.0]
+        updated_data[keypt+'_visible'].append(0)
+      else:
+        temp = transform([finalXs[cnt], finalYs[cnt]], c, s, [final_img_size, final_img_size], rot=r)
+        updated_data[keypt+'_visible'].append(1)
+
+      cnt+=1
+      updated_data[keypt+'_x'].append(temp[0])
+      updated_data[keypt+'_y'].append(temp[1])
+
+    # image inpainting to fill in 0 pixels
+    img2gray = cv2.cvtColor(rot_img,cv2.COLOR_BGR2GRAY)
+    ret, mask = cv2.threshold(img2gray, 10, 255, cv2.THRESH_BINARY)
+    mask_inv = cv2.bitwise_not(mask)
+
+    dst = cv2.inpaint(rot_img,mask_inv,3,cv2.INPAINT_TELEA)
+
+    cv2.imwrite((dest+annot_df['filename'][i][:-4]+"_r.jpg"), dst)
+
+    # except:
+    #   print(annot_df['filename'][i])
+
+  updated_df = pd.DataFrame.from_dict(updated_data)
+  return updated_df
+
+
 if __name__ == "__main__":
-  move_files('./data/PASCAL_VOC_2012/', dest='./data/images/')
-  move_files('./data/PASCAL2011_animal_annotation/', dest='./data/annot/')
-  annot_df = xml_to_df("./data/annot/")
-  updated_df = generate_cropped_images_and_keypoints_df(annot_df)
-  updated_df.to_csv("./data/updated_df.csv", index=False)
+  # move_files('/media/gaurav/Incremental_pose/data/PASCAL_VOC_2012/', dest='/media/gaurav/Incremental_pose/data/images/')
+  # move_files('/media/gaurav/Incremental_pose/data/PASCAL2011_animal_annotation/', dest='/media/gaurav/Incremental_pose/data/annot/')
+  annot_df = xml_to_df("/media/gaurav/Incremental_pose/data/annot/")
+  # updated_df = generate_cropped_images_and_keypoints_df(annot_df)
+  # updated_df.to_csv("./data/updated_df.csv", index=False)
+  updated_df = generate_cropped_images_and_keypoints_df_without_zero_padding(annot_df, src="/media/gaurav/Incremental_pose/data/images/", dest="/media/gaurav/Incremental_pose/data/cropped_images_no_zero_padding/", final_img_size=512)
+  updated_df.to_csv("/media/gaurav/Incremental_pose/data/updated_df_no_zero_padding.csv", index=False)

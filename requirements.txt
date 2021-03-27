@@ -3,7 +3,6 @@
 # platform: linux-64
 _libgcc_mutex=0.1=main
 absl-py=0.11.0=pypi_0
-alphapose=0.3.0+ff22ba9=dev_0
 appdirs=1.4.4=py_0
 argon2-cffi=20.1.0=py37h27cfd23_1
 async_generator=1.10=py37h28b3542_0
@@ -150,7 +149,6 @@ pytest=6.2.2=pypi_0
 python=3.7.9=h7579374_0
 python-dateutil=2.8.1=py_0
 python_abi=3.7=1_cp37m
-pytorch=1.1.0=py3.7_cuda9.0.176_cudnn7.5.1_0
 pytz=2020.5=pyhd3eb1b0_0
 pyyaml=5.3.1=py37h7b6447c_1
 pyzmq=20.0.0=py37h5a562af_1
@@ -181,7 +179,6 @@ tk=8.6.10=hbc83047_0
 toml=0.10.2=pypi_0
 torchfile=0.1.0=py_0
 torchsummary=1.5.1=pypi_0
-torchvision=0.3.0=py37_cu9.0.176_1
 tornado=6.1=py37h4abf009_0
 tqdm=4.55.1=pyhd3eb1b0_0
 traitlets=5.0.5=pyhd3eb1b0_0
