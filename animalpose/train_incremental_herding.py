@@ -549,18 +549,18 @@ def main():
             train=False,
         )
 
-        if cfg.TRAIN_INCREMENTAL.AUGMENTATION == "rotation":
-            augmented_tempset = AnimalDatasetCombined(
-                    cfg.DATASET.AUG_IMAGES,
-                    cfg.DATASET.AUG_ANNOT,
-                    train_images_list,
-                    input_size=(512, 512),
-                    output_size=(128, 128),
-                    transforms=torchvision.transforms.Compose([ToTensor()]),
-                    train=True,
-                )
-            print("Length of Augmented Set: ", len(augmented_tempset))
-            train_datasets.append(augmented_tempset)
+        # if cfg.TRAIN_INCREMENTAL.AUGMENTATION == "rotation":
+        #     augmented_tempset = AnimalDatasetCombined(
+        #             cfg.DATASET.AUG_IMAGES,
+        #             cfg.DATASET.AUG_ANNOT,
+        #             train_images_list,
+        #             input_size=(512, 512),
+        #             output_size=(128, 128),
+        #             transforms=torchvision.transforms.Compose([ToTensor()]),
+        #             train=True,
+        #         )
+        #     print("Length of Augmented Set: ", len(augmented_tempset))
+        #     train_datasets.append(augmented_tempset)
 
         train_datasets.append(train_tempset)
         val_datasets.append(val_tempset)
@@ -849,8 +849,14 @@ def main():
                 plotX = pd.DataFrame(np.array(keypoints_list))
                 plotX.columns = np.arange(0, np.array(keypoints_list).shape[1])
 
-                km = KMeans(n_clusters=cfg.SAMPLING.N_CLUSTERS)
-                km.fit(keypoints_list)
+                if cfg.SAMPLING.N_CLUSTERS == 0:
+                    print(int(np.ceil(samples_per_class/51)))
+                    km = KMeans(n_clusters=int(np.ceil(samples_per_class / 51)))
+                    km.fit(keypoints_list)
+
+                else:
+                    km = KMeans(n_clusters=cfg.SAMPLING.N_CLUSTERS)
+                    km.fit(keypoints_list)
 
                 pca = PCA(n_components=2)
                 PCs_2d = pd.DataFrame(pca.fit_transform(plotX))
