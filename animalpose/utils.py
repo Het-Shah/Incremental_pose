@@ -11,6 +11,9 @@ import pandas as pd
 from PIL import Image
 from PIL import ImageDraw
 import matplotlib.pyplot as plt
+import skimage
+from skimage.transform import PiecewiseAffineTransform, warp
+from skimage.io import imsave, imread
 
 import torch
 import torchvision
@@ -52,6 +55,7 @@ def save_images(
     annot_path="/media2/het/Incremental_pose/data/updated_df.csv",
     save_dir="./keypoints/",
     animal_class=None,
+    train = True
 ):
     if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
@@ -62,7 +66,7 @@ def save_images(
         input_size=(512, 512),
         output_size=(128, 128),
         transforms=torchvision.transforms.Compose([ToTensor()]),
-        train=True,
+        train=train,
     )
 
     train_loader = torch.utils.data.DataLoader(trainset, batch_size=1, shuffle=False)
@@ -82,14 +86,14 @@ def save_images(
             for k in range(labels.shape[1]):
                 images = labels.cpu().numpy()[j][k]
                 final_img += images
-                plt.imsave(
-                    os.path.join(
-                        save_dir,
-                        "temp" + str(animal_class) + "_{}_{}_{}.png".format(i, j, k),
-                    ),
-                    images,
-                    cmap="gray",
-                )
+                # plt.imsave(
+                #     os.path.join(
+                #         save_dir,
+                #         "temp" + str(animal_class) + "_{}_{}_{}.png".format(i, j, k),
+                #     ),
+                #     images,
+                #     cmap="gray",
+                # )
             plt.imsave(
                 os.path.join(
                     save_dir, "temp" + str(animal_class) + "_{}_{}.png".format(i, j)
@@ -712,12 +716,11 @@ def rotate_elbow_knee_limbs(
     fname_list = list(df["filename"])
 
     cnt = 0
-    pool = Pool()
+    # pool = Pool()
 
-    for fname in pool.map(f, fname_list):
-    # for fname in fname_list:
+    # for fname in pool.map(f, fname_list):
+    for fname in fname_list:
         print(fname)
-        img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))
         keypoints, _, vis = get_keypoints(fname, csv_file=input_csv_file)
 
         c_src = [
@@ -734,12 +737,15 @@ def rotate_elbow_knee_limbs(
             [0.0, 1.0],
         ]
 
+        # c_src = []
+        # c_dst = []
+
         indices_visited = []
 
         for ind in indices_to_be_rotated:
             if vis[ind[0]] == 1 and vis[ind[1]] == 1 and vis[ind[2]] == 1:
-                angle = random.uniform(0.25, 0.6)
-                # angle = 0.25
+                # angle = random.uniform(0.25, 0.6)
+                angle = 0.25
                 rot_pt_x, rot_pt_y = rotate_about_pt(
                     keypoints[ind[1]][0],
                     keypoints[ind[1]][1],
@@ -857,6 +863,17 @@ def rotate_elbow_knee_limbs(
         c_src = np.array(c_src)
         c_dst = np.array(c_dst)
         # try:
+
+        cols, rows = 512, 512
+
+        img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))
+        
+        print(c_src, c_dst)
+
+        # M = cv2.getAffineTransform(np.float32(c_src[:3]),np.float32(c_dst[:3]))
+
+        # dst = cv2.warpAffine(img,M,(cols,rows))
+        
         warped = warp_image_cv(img, c_src, c_dst, dshape=(512, 512))
 
         img2gray = cv2.cvtColor(warped,cv2.COLOR_BGR2GRAY)
@@ -864,8 +881,13 @@ def rotate_elbow_knee_limbs(
         mask_inv = cv2.bitwise_not(mask)
 
         dst = cv2.inpaint(warped,mask_inv,3,cv2.INPAINT_TELEA)
-
+        
         cv2.imwrite(os.path.join(output_dir, fname[:-4] + ".jpg"), dst)
+
+        if cnt == 10:
+            return 
+
+        cnt+=1 
 
         # except:2010_005241_1_fn.jpg
         #     img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))

@@ -16,10 +16,10 @@ SAMPLING:
   N_CLUSTERS: 5
 DATASET:
   DATA_ROOT: '/media/gaurav/Incremental_pose/data/'
-  IMAGES: '/media/gaurav/Incremental_pose/data/cropped_images/'
-  AUG_IMAGES: '/media/gaurav/Incremental_pose/data/rotated_images_random_all_three/'
-  ANNOT: '/media/gaurav/Incremental_pose/data/updated_df.csv'
-  AUG_ANNOT: '/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three.csv'
+  IMAGES: '/media/gaurav/Incremental_pose/data/cropped_images_no_zero_padding/'
+  AUG_IMAGES: '/media/gaurav/Incremental_pose/data/rotated_images_no_zero_padding/'
+  ANNOT: '/media/gaurav/Incremental_pose/data/updated_df_no_zero_padding.csv'
+  AUG_ANNOT: '/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three_no_zero_padding.csv'
 DATA_PRESET:
   TYPE: 'simple'
   SIGMA: 2
@@ -68,7 +68,7 @@ TRAIN_INCREMENTAL:
   BATCH_SIZE: 10
   VAL_BATCH_SIZE: 10
   BEGIN_EPOCH: 0
-  END_EPOCH: 10
+  END_EPOCH: 0
   KD_LOSS: False 
   OPTIMIZER: 'adam'
   LR: 0.0001
