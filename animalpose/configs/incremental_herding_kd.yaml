@@ -6,20 +6,21 @@ ANIMAL_CLASS_INCREMENTAL:
   - "horse"
   - "sheep"
 INCREMENTAL_STEP: 1
-MEMORY: 1000
-MEMORY_TYPE: 'fix'
+MEMORY: 0.1
+MEMORY_TYPE: 'growing'
 SAMPLING:
-  STRATERGY: 'dpp'
+  STRATERGY: 'rbf-dpp'
   DISTANCE_METRIC: 'eucl'
-  CLUSTER_SAMPLING: 'dist'
-  CLUSTER_PROPORTION: 'prop'
-  N_CLUSTERS: 5
+  CLUSTER_SAMPLING: 'random'
+  CLUSTER_PROPORTION: 'same'
+  N_CLUSTERS: 0
+  GAMMA: 0.5
 DATASET:
-  DATA_ROOT: '/media/gaurav/Incremental_pose/data/'
-  IMAGES: '/media/gaurav/Incremental_pose/data/cropped_images_no_zero_padding/'
-  AUG_IMAGES: '/media/gaurav/Incremental_pose/data/rotated_images_no_zero_padding/'
-  ANNOT: '/media/gaurav/Incremental_pose/data/updated_df_no_zero_padding.csv'
-  AUG_ANNOT: '/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three_no_zero_padding.csv'
+  DATA_ROOT: '/media2/het/Incremental_pose/data/'
+  IMAGES: '/media2/het/Incremental_pose/data/cropped_images/'
+  AUG_IMAGES: '/media2/het/Incremental_pose/data/rotated_images/'
+  ANNOT: '/media2/het/Incremental_pose/data/updated_df.csv'
+  AUG_ANNOT: '/media2/het/Incremental_pose/data/updated_df_rotated_random_all_three_no_zero_padding.csv'
 DATA_PRESET:
   TYPE: 'simple'
   SIGMA: 2
@@ -32,7 +33,7 @@ DATA_PRESET:
   - 128
 MODEL:
   TYPE: 'FastPose'
-  PRETRAINED: ''
+  PRETRAINED: '/media2/het/AlphaPose/animalpose/exp/55-incremental_herding_kd.yaml/model_Base.pth'
   TRY_LOAD: ''
   NUM_DECONV_FILTERS:
   - 128
@@ -49,10 +50,10 @@ DETECTOR:
 TRAIN:
   BASE_DATA_FOR_INCREMENTAL: 0.1
   WORLD_SIZE: 4
-  BATCH_SIZE: 20
-  VAL_BATCH_SIZE: 20
+  BATCH_SIZE: 13
+  VAL_BATCH_SIZE: 13
   BEGIN_EPOCH: 0
-  END_EPOCH: 20
+  END_EPOCH: 0
   OPTIMIZER: 'adam'
   LR: 0.0001
   WEIGHT_DECAY: 0
@@ -64,11 +65,11 @@ TRAIN:
   - 19
 TRAIN_INCREMENTAL:
   BASE_DATA_FOR_INCREMENTAL: 0.1
-  AUGMENTATION: 'rotation'
-  BATCH_SIZE: 10
-  VAL_BATCH_SIZE: 10
+  AUGMENTATION: 'None'
+  BATCH_SIZE: 13
+  VAL_BATCH_SIZE: 13
   BEGIN_EPOCH: 0
-  END_EPOCH: 0
+  END_EPOCH: 1
   KD_LOSS: False 
   OPTIMIZER: 'adam'
   LR: 0.0001

@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.metrics.pairwise import rbf_kernel
 
 from dppy.finite_dpps import FiniteDPP
 from dppy.utils import example_eval_L_linear
@@ -588,6 +590,9 @@ def main():
         f"############# Starting Base Training with base classes {cfg.ANIMAL_CLASS_BASE} ########################"
     )
 
+    memory_dict = {}
+    classes_visited = []
+
     for i in range(cfg.TRAIN.BEGIN_EPOCH, cfg.TRAIN.END_EPOCH):
         opt.epoch = i
         current_lr = optimizer.state_dict()["param_groups"][0]["lr"]
@@ -690,252 +695,96 @@ def main():
         samples_per_class = int(cfg.MEMORY / len(classes_till_now))
 
         for animal_class in classes_till_now:
-            animal_list = []
-            keypoints_list = []
-            keypoints_to_fname = {}
-            fname_list = []
-            for fname in filename_list_classes[animal_class]:
-                temp = (fname, [])
-                for keypt in keypoint_names:
-                    temp[1].append(
-                        [
-                            annot_df.loc[annot_df["filename"] == fname][
-                                keypt + "_x"
-                            ].item(),
-                            annot_df.loc[annot_df["filename"] == fname][
-                                keypt + "_y"
-                            ].item(),
-                            annot_df.loc[annot_df["filename"] == fname][
-                                keypt + "_visible"
-                            ].item(),
-                        ]
-                    )
-
-                animal_list.append(temp)
-
-                if (
-                    cfg.SAMPLING.STRATERGY == "random"
-                    or cfg.SAMPLING.STRATERGY == "feature_dpp"
-                    or cfg.SAMPLING.STRATERGY == "dpp"
-                ):
-                    fname_list.append(temp[0])
-
-                if cfg.SAMPLING.STRATERGY == "herding":
-                    keypoints_list.append(temp[1])
-
-                if (
-                    cfg.SAMPLING.STRATERGY == "cluster"
-                    or cfg.SAMPLING.STRATERGY == "dpp"
-                ):
-                    temp_2 = np.array(temp[1])
-                    temp_2 = temp_2.flatten()
-                    keypoints_list.append(temp_2)
-                    keypoints_to_fname[str(temp_2)] = fname
-
-            keypoints_list = np.array(keypoints_list)
-
-            if cfg.MEMORY_TYPE == "fix" and cfg.MEMORY <= 1:
-                samples_per_class = int(cfg.MEMORY * len(animal_list))
-
-            if cfg.MEMORY_TYPE != "fix":
-                if cfg.TRAIN_INCREMENTAL.BASE_DATA_FOR_INCREMENTAL <= 1:
-                    samples_per_class = int(
-                        cfg.TRAIN_INCREMENTAL.BASE_DATA_FOR_INCREMENTAL
-                        * len(animal_list)
-                    )
-
-                else:
-                    if cfg.SAMPLING.STRATERGY == "cluster":
-                        samples_per_class = (
-                            cfg.TRAIN_INCREMENTAL.BASE_DATA_FOR_INCREMENTAL
-                            * cfg.SAMPLING.N_CLUSTERS
+            if animal_class in classes_visited:
+                images_list = memory_dict[animal_class]
+            else:
+                print("Computing images list")
+                animal_list = []
+                keypoints_list = []
+                keypoints_to_fname = {}
+                fname_list = []
+                for fname in filename_list_classes[animal_class]:
+                    temp = (fname, [])
+                    for keypt in keypoint_names:
+                        temp[1].append(
+                            [
+                                annot_df.loc[annot_df["filename"] == fname][
+                                    keypt + "_x"
+                                ].item(),
+                                annot_df.loc[annot_df["filename"] == fname][
+                                    keypt + "_y"
+                                ].item(),
+                                annot_df.loc[annot_df["filename"] == fname][
+                                    keypt + "_visible"
+                                ].item(),
+                            ]
                         )
+
+                    animal_list.append(temp)
+
+                    if (
+                        cfg.SAMPLING.STRATERGY == "random"
+                        or cfg.SAMPLING.STRATERGY == "feature_dpp"
+                        or cfg.SAMPLING.STRATERGY == "dpp"
+                    ):
+                        fname_list.append(temp[0])
+
+                    if cfg.SAMPLING.STRATERGY == "herding":
+                        keypoints_list.append(temp[1])
+
+                    if (
+                        cfg.SAMPLING.STRATERGY == "cluster"
+                        or cfg.SAMPLING.STRATERGY == "dpp"
+                        or cfg.SAMPLING.STRATERGY == "rbf-dpp"
+                    ):
+                        temp_2 = np.array(temp[1])
+                        temp_2 = temp_2.flatten()
+                        keypoints_list.append(temp_2)
+                        keypoints_to_fname[str(temp_2)] = fname
+
+                keypoints_list = np.array(keypoints_list)
+
+                if cfg.MEMORY_TYPE == "fix" and cfg.MEMORY <= 1:
+                    samples_per_class = int(cfg.MEMORY * len(animal_list))
+
+                if cfg.MEMORY_TYPE != "fix":
+                    if cfg.TRAIN_INCREMENTAL.BASE_DATA_FOR_INCREMENTAL <= 1:
+                        samples_per_class = int(
+                            cfg.TRAIN_INCREMENTAL.BASE_DATA_FOR_INCREMENTAL
+                            * len(animal_list)
+                        )
+
                     else:
-                        samples_per_class = (
-                            cfg.TRAIN_INCREMENTAL.BASE_DATA_FOR_INCREMENTAL
-                        )
+                        if cfg.SAMPLING.STRATERGY == "cluster":
+                            samples_per_class = (
+                                cfg.TRAIN_INCREMENTAL.BASE_DATA_FOR_INCREMENTAL
+                                * cfg.SAMPLING.N_CLUSTERS
+                            )
+                        else:
+                            samples_per_class = (
+                                cfg.TRAIN_INCREMENTAL.BASE_DATA_FOR_INCREMENTAL
+                            )
 
-            if cfg.MEMORY_TYPE == "fix" and cfg.SAMPLING.STRATERGY == "dpp":
-                n_clusters = int(np.ceil(samples_per_class / 51))
-                k = int(samples_per_class / n_clusters)
+                if cfg.MEMORY_TYPE == "fix" and cfg.SAMPLING.STRATERGY == "dpp":
+                    n_clusters = int(np.ceil(samples_per_class / 51))
+                    k = int(samples_per_class / n_clusters)
 
-                if animal_class == "horse":
-                    n_clusters += 1
-                print(f"Samples expected: {samples_per_class}")
+                    if animal_class == "horse":
+                        n_clusters += 1
+                    print(f"Samples expected: {samples_per_class}")
 
-                km = KMeans(n_clusters=n_clusters)
-                km.fit(keypoints_list)
-
-                keypoint_list_clusters = []
-
-                for clus in range(n_clusters):
-                    temp1 = keypoints_list[ClusterIndicesNumpy(clus, km.labels_)]
-                    # print(temp1.shape)
-                    k = min(k, np.linalg.matrix_rank(temp1))
-                    Phi = temp1.dot(temp1.T)
-
-                    DPP = FiniteDPP("likelihood", **{"L": Phi})
-                    for _ in range(5):
-                        DPP.sample_exact_k_dpp(size=k)
-
-                    max_det = 0
-                    index_of_samples = DPP.list_of_samples[0]
-
-                    for j in range(5):
-                        matrix = np.array(Phi)
-                        submatrix = matrix[
-                            np.ix_(DPP.list_of_samples[j], DPP.list_of_samples[j])
-                        ]
-                        try:
-                            det = np.linalg.det(submatrix)
-                            if det > max_det:
-                                max_det = det
-                                index_of_samples = DPP.list_of_samples[j]
-                        except:
-                            continue
-
-                    temp = temp1[index_of_samples]
-
-                    for j in temp:
-                        keypoint_list_clusters.append(j)
-
-                images_list = []
-                for j in keypoint_list_clusters:
-                    images_list.append(keypoints_to_fname[str(j)])
-
-                # print(images_list)
-                # save_images(
-                #     images_list[:5],
-                #     images_path=cfg.DATASET.IMAGES,
-                #     annot_path=cfg.DATASET.ANNOT,
-                #     save_dir="./exp/{}-{}/images_visualizations_dpp/".format(
-                #         opt.exp_id, cfg.FILE_NAME
-                #     ),
-                #     animal_class=animal_class,
-                # )
-
-                # cnt = 0 
-                # images_not_selected = []
-                # for f in fname_list:
-                #     if not f in images_list:
-                #         images_not_selected.append(f)
-                #         cnt+=1 
-                    
-                #     if cnt == 5: 
-                #         break
-
-                # print(images_not_selected)
-
-                # save_images(
-                #     images_not_selected[:5],
-                #     images_path=cfg.DATASET.IMAGES,
-                #     annot_path=cfg.DATASET.ANNOT,
-                #     save_dir="./exp/{}-{}/images_visualizations_dpp_2/".format(
-                #         opt.exp_id, cfg.FILE_NAME
-                #     ),
-                #     animal_class=animal_class,
-                # )
-                    
-            if cfg.SAMPLING.STRATERGY == "random":
-                images_list = fname_list[:samples_per_class]
-                del animal_list
-                del fname_list
-
-            if cfg.SAMPLING.STRATERGY == "cluster":
-                if cfg.SAMPLING.DISTANCE_METRIC == "cosine":
-                    length = np.sqrt((keypoints_list ** 2).sum(axis=1))[:, None]
-                    keypoints_list = keypoints_list / length
-
-                plotX = pd.DataFrame(np.array(keypoints_list))
-                plotX.columns = np.arange(0, np.array(keypoints_list).shape[1])
-
-                if cfg.SAMPLING.N_CLUSTERS == 0:
-                    print(int(np.ceil(samples_per_class/51)))
-                    km = KMeans(n_clusters=int(np.ceil(samples_per_class / 51)))
+                    km = KMeans(n_clusters=n_clusters)
                     km.fit(keypoints_list)
 
-                else:
-                    km = KMeans(n_clusters=cfg.SAMPLING.N_CLUSTERS)
-                    km.fit(keypoints_list)
+                    keypoint_list_clusters = []
 
-                pca = PCA(n_components=2)
-                PCs_2d = pd.DataFrame(pca.fit_transform(plotX))
-                PCs_2d.columns = ["PC1_2d", "PC2_2d"]
-                plotX = pd.concat([plotX, PCs_2d], axis=1, join="inner")
-
-                clusters = km.predict(keypoints_list)
-                plotX["Cluster"] = clusters
-
-                samples_per_cluster = int(samples_per_class / cfg.SAMPLING.N_CLUSTERS)
-
-                keypoint_list_clusters = []
-                clusters_data = {}
-                for clus in range(cfg.SAMPLING.N_CLUSTERS):
-                    if cfg.SAMPLING.CLUSTER_PROPORTION != "same":
-                        samples_per_cluster = samples_per_class * int(
-                            len(keypoints_list[ClusterIndicesNumpy(clus, km.labels_)])
-                            / len(keypoints_list)
-                            + 1
-                        )
-
-                    if cfg.SAMPLING.CLUSTER_SAMPLING == "random":
-                        temp = keypoints_list[ClusterIndicesNumpy(clus, km.labels_)][
-                            :samples_per_cluster
-                        ]
-
-                    elif cfg.SAMPLING.CLUSTER_SAMPLING == "dist":
-                        d = km.transform(keypoints_list)[:, clus]
-                        dist_tup = list(enumerate(d))
-                        l = sorted(dist_tup, key=lambda i: i[1])
-
-                        rng = l[-1][1] - l[0][1]
-
-                        temp1, temp2, temp3, temp4 = [], [], [], []
-                        for dist in l:
-                            if dist[1] < l[0][1] + 0.25 * rng:
-                                temp1.append(keypoints_list[dist[0]])
-                            elif (
-                                dist[1] >= l[0][1] + 0.25 * rng
-                                and dist[1] < l[0][1] + 0.50 * rng
-                            ):
-                                temp2.append(keypoints_list[dist[0]])
-                            elif (
-                                dist[1] >= l[0][1] + 0.50 * rng
-                                and dist[1] < l[0][1] + 0.75 * rng
-                            ):
-                                temp3.append(keypoints_list[dist[0]])
-                            else:
-                                temp4.append(keypoints_list[dist[0]])
-                        total_len = len(temp1) + len(temp2) + len(temp3) + len(temp4)
-                        samples_1 = round(
-                            samples_per_cluster * (len(temp1) / total_len)
-                        )
-                        samples_2 = round(
-                            samples_per_cluster * (len(temp2) / total_len)
-                        )
-                        samples_3 = round(
-                            samples_per_cluster * (len(temp3) / total_len)
-                        )
-                        samples_4 = round(
-                            samples_per_cluster * (len(temp4) / total_len)
-                        )
-
-                        temp1 = temp1[:samples_1]
-                        temp2 = temp2[:samples_2]
-                        temp3 = temp3[:samples_3]
-                        temp4 = temp4[:samples_4]
-
-                        temp3.extend(temp4)
-                        temp2.extend(temp3)
-                        temp1.extend(temp2)
-                        temp = temp1
-
-                    elif cfg.SAMPLING.CLUSTER_SAMPLING == "dpp":
+                    for clus in range(n_clusters):
                         temp1 = keypoints_list[ClusterIndicesNumpy(clus, km.labels_)]
+                        # print(temp1.shape)
+                        k = min(k, np.linalg.matrix_rank(temp1))
                         Phi = temp1.dot(temp1.T)
 
                         DPP = FiniteDPP("likelihood", **{"L": Phi})
-                        k = 50
                         for _ in range(5):
                             DPP.sample_exact_k_dpp(size=k)
 
@@ -957,155 +806,377 @@ def main():
 
                         temp = temp1[index_of_samples]
 
-                    else:
-                        d = km.transform(keypoints_list)[:, clus]
-                        ind = np.argsort(d)[::][:samples_per_cluster]
+                        for j in temp:
+                            keypoint_list_clusters.append(j)
 
-                        temp = keypoints_list[ind]
+                    images_list = []
+                    for j in keypoint_list_clusters:
+                        images_list.append(keypoints_to_fname[str(j)])
 
-                    clusters_data[str(clus)] = plotX[plotX["Cluster"] == clus]
+                    # print(images_list)
+                    # save_images(
+                    #     images_list[:5],
+                    #     images_path=cfg.DATASET.IMAGES,
+                    #     annot_path=cfg.DATASET.ANNOT,
+                    #     save_dir="./exp/{}-{}/images_visualizations_dpp/".format(
+                    #         opt.exp_id, cfg.FILE_NAME
+                    #     ),
+                    #     animal_class=animal_class,
+                    # )
+
+                    # cnt = 0
+                    # images_not_selected = []
+                    # for f in fname_list:
+                    #     if not f in images_list:
+                    #         images_not_selected.append(f)
+                    #         cnt+=1
+
+                    #     if cnt == 5:
+                    #         break
+
+                    # print(images_not_selected)
+
+                    # save_images(
+                    #     images_not_selected[:5],
+                    #     images_path=cfg.DATASET.IMAGES,
+                    #     annot_path=cfg.DATASET.ANNOT,
+                    #     save_dir="./exp/{}-{}/images_visualizations_dpp_2/".format(
+                    #         opt.exp_id, cfg.FILE_NAME
+                    #     ),
+                    #     animal_class=animal_class,
+                    # )
+
+                if cfg.SAMPLING.STRATERGY == "rbf-dpp":
+                    Phi = rbf_kernel(keypoints_list, gamma=cfg.SAMPLING.GAMMA)
+
+                    k = samples_per_class
+
+                    print(f"Rank of kernel = {np.linalg.matrix_rank(Phi)}")
+                    print(f"Samples to be sampled = {k}")
+
+                    # print(np.linalg.eig(Phi))
+
+                    DPP = FiniteDPP("likelihood", **{"L": Phi})
+                    # for _ in range(5):
+                    DPP.sample_exact_k_dpp(size=k)
+
+                    # max_det = 0
+                    index_of_samples = DPP.list_of_samples[0]
+
+                    # for j in range(5):
+                    #     matrix = np.array(Phi)
+                    #     submatrix = matrix[
+                    #         np.ix_(DPP.list_of_samples[j], DPP.list_of_samples[j])
+                    #     ]
+                    #     try:
+                    #         det = np.linalg.det(submatrix)
+                    #         if det > max_det:
+                    #             max_det = det
+                    #             index_of_samples = DPP.list_of_samples[j]
+                    #     except:
+                    #         continue
+
+                    temp = keypoints_list[index_of_samples]
+                    images_list = []
                     for j in temp:
-                        keypoint_list_clusters.append(j)
+                        images_list.append(keypoints_to_fname[str(j)])
+                    print(len(images_list))
 
-                fig, ax = plt.subplots()
-                for key in clusters_data.keys():
+                if cfg.SAMPLING.STRATERGY == "random":
+                    images_list = fname_list[:samples_per_class]
+                    del animal_list
+                    del fname_list
+
+                if cfg.SAMPLING.STRATERGY == "cluster":
+                    if cfg.SAMPLING.DISTANCE_METRIC == "cosine":
+                        length = np.sqrt((keypoints_list ** 2).sum(axis=1))[:, None]
+                        keypoints_list = keypoints_list / length
+
+                    plotX = pd.DataFrame(np.array(keypoints_list))
+                    plotX.columns = np.arange(0, np.array(keypoints_list).shape[1])
+
+                    if cfg.SAMPLING.N_CLUSTERS == 0:
+                        n_clusters = int(np.ceil(samples_per_class / 51))
+
+                    else:
+                        n_clusters = cfg.SAMPLING.N_CLUSTERS
+
+                    km = KMeans(n_clusters=n_clusters)
+                    km.fit(keypoints_list)
+
+                    pca = PCA(n_components=2)
+                    PCs_2d = pd.DataFrame(pca.fit_transform(plotX))
+                    PCs_2d.columns = ["PC1_2d", "PC2_2d"]
+                    plotX = pd.concat([plotX, PCs_2d], axis=1, join="inner")
+
+                    clusters = km.predict(keypoints_list)
+                    plotX["Cluster"] = clusters
+
+                    if cfg.SAMPLING.N_CLUSTERS == 0:
+                        samples_per_cluster = min(samples_per_class, 51)
+                    else:
+                        samples_per_cluster = int(samples_per_class / n_clusters)
+
+                    # print("Keypoints length: ", len(keypoints_list))
+                    # print("N clusters: ", n_clusters)
+                    # print("Samples expected: ", samples_per_class)
+                    # print("Samples for each cluster: ", samples_per_cluster)
+
+                    keypoint_list_clusters = []
+                    clusters_data = {}
+                    for clus in range(n_clusters):
+                        if cfg.SAMPLING.CLUSTER_PROPORTION != "same":
+                            samples_per_cluster = samples_per_class * int(
+                                len(
+                                    keypoints_list[
+                                        ClusterIndicesNumpy(clus, km.labels_)
+                                    ]
+                                )
+                                / len(keypoints_list)
+                                + 1
+                            )
+
+                        if cfg.SAMPLING.CLUSTER_SAMPLING == "random":
+                            temp = keypoints_list[
+                                ClusterIndicesNumpy(clus, km.labels_)
+                            ][:samples_per_cluster]
+
+                        elif cfg.SAMPLING.CLUSTER_SAMPLING == "dist":
+                            d = km.transform(keypoints_list)[:, clus]
+                            dist_tup = list(enumerate(d))
+                            l = sorted(dist_tup, key=lambda i: i[1])
+
+                            rng = l[-1][1] - l[0][1]
+
+                            temp1, temp2, temp3, temp4 = [], [], [], []
+                            for dist in l:
+                                if dist[1] < l[0][1] + 0.25 * rng:
+                                    temp1.append(keypoints_list[dist[0]])
+                                elif (
+                                    dist[1] >= l[0][1] + 0.25 * rng
+                                    and dist[1] < l[0][1] + 0.50 * rng
+                                ):
+                                    temp2.append(keypoints_list[dist[0]])
+                                elif (
+                                    dist[1] >= l[0][1] + 0.50 * rng
+                                    and dist[1] < l[0][1] + 0.75 * rng
+                                ):
+                                    temp3.append(keypoints_list[dist[0]])
+                                else:
+                                    temp4.append(keypoints_list[dist[0]])
+                            total_len = (
+                                len(temp1) + len(temp2) + len(temp3) + len(temp4)
+                            )
+                            samples_1 = round(
+                                samples_per_cluster * (len(temp1) / total_len)
+                            )
+                            samples_2 = round(
+                                samples_per_cluster * (len(temp2) / total_len)
+                            )
+                            samples_3 = round(
+                                samples_per_cluster * (len(temp3) / total_len)
+                            )
+                            samples_4 = round(
+                                samples_per_cluster * (len(temp4) / total_len)
+                            )
+
+                            temp1 = temp1[:samples_1]
+                            temp2 = temp2[:samples_2]
+                            temp3 = temp3[:samples_3]
+                            temp4 = temp4[:samples_4]
+
+                            temp3.extend(temp4)
+                            temp2.extend(temp3)
+                            temp1.extend(temp2)
+                            temp = temp1
+
+                        elif cfg.SAMPLING.CLUSTER_SAMPLING == "dpp":
+                            temp1 = keypoints_list[
+                                ClusterIndicesNumpy(clus, km.labels_)
+                            ]
+                            Phi = temp1.dot(temp1.T)
+
+                            DPP = FiniteDPP("likelihood", **{"L": Phi})
+                            k = 50
+                            for _ in range(5):
+                                DPP.sample_exact_k_dpp(size=k)
+
+                            max_det = 0
+                            index_of_samples = DPP.list_of_samples[0]
+
+                            for j in range(5):
+                                matrix = np.array(Phi)
+                                submatrix = matrix[
+                                    np.ix_(
+                                        DPP.list_of_samples[j], DPP.list_of_samples[j]
+                                    )
+                                ]
+                                try:
+                                    det = np.linalg.det(submatrix)
+                                    if det > max_det:
+                                        max_det = det
+                                        index_of_samples = DPP.list_of_samples[j]
+                                except:
+                                    continue
+
+                            temp = temp1[index_of_samples]
+
+                        else:
+                            d = km.transform(keypoints_list)[:, clus]
+                            ind = np.argsort(d)[::][:samples_per_cluster]
+
+                            temp = keypoints_list[ind]
+
+                        clusters_data[str(clus)] = plotX[plotX["Cluster"] == clus]
+                        for j in temp:
+                            keypoint_list_clusters.append(j)
+
+                    fig, ax = plt.subplots()
+                    for key in clusters_data.keys():
+                        ax.scatter(
+                            clusters_data[key]["PC1_2d"],
+                            clusters_data[key]["PC2_2d"],
+                            label=key,
+                        )
+                    centroids = km.cluster_centers_
+                    centroids = pca.transform(np.array(centroids))
+                    ax.scatter(centroids[:, 0], centroids[:, 1], s=80)
+
+                    plotS = pd.DataFrame(np.array(keypoint_list_clusters))
+                    PCs_2dS = pd.DataFrame(pca.transform(plotS))
+                    PCs_2dS.columns = ["PC1_2d", "PC2_2d"]
+                    plotS = pd.concat([plotS, PCs_2dS], axis=1, join="inner")
+
+                    ax.legend()
+                    fig.savefig(
+                        "./exp/{}-{}/clustering_incremental_step_{}_{}.png".format(
+                            opt.exp_id, cfg.FILE_NAME, i, animal_class
+                        )
+                    )
+
                     ax.scatter(
-                        clusters_data[key]["PC1_2d"],
-                        clusters_data[key]["PC2_2d"],
-                        label=key,
+                        plotS["PC1_2d"], plotS["PC2_2d"], label="sampled", marker="x"
                     )
-                centroids = km.cluster_centers_
-                centroids = pca.transform(np.array(centroids))
-                ax.scatter(centroids[:, 0], centroids[:, 1], s=80)
-
-                plotS = pd.DataFrame(np.array(keypoint_list_clusters))
-                PCs_2dS = pd.DataFrame(pca.transform(plotS))
-                PCs_2dS.columns = ["PC1_2d", "PC2_2d"]
-                plotS = pd.concat([plotS, PCs_2dS], axis=1, join="inner")
-
-                ax.legend()
-                fig.savefig(
-                    "./exp/{}-{}/clustering_incremental_step_{}_{}.png".format(
-                        opt.exp_id, cfg.FILE_NAME, i, animal_class
+                    ax.legend()
+                    fig.savefig(
+                        "./exp/{}-{}/clustering_incremental_step_sampled_{}_{}.png".format(
+                            opt.exp_id, cfg.FILE_NAME, i, animal_class
+                        )
                     )
-                )
 
-                ax.scatter(
-                    plotS["PC1_2d"], plotS["PC2_2d"], label="sampled", marker="x"
-                )
-                ax.legend()
-                fig.savefig(
-                    "./exp/{}-{}/clustering_incremental_step_sampled_{}_{}.png".format(
-                        opt.exp_id, cfg.FILE_NAME, i, animal_class
+                    images_list = []
+                    for j in keypoint_list_clusters:
+                        images_list.append(keypoints_to_fname[str(j)])
+
+                    print(len(images_list))
+
+                    save_images(
+                        images_list[:5],
+                        images_path=cfg.DATASET.IMAGES,
+                        annot_path=cfg.DATASET.ANNOT,
+                        save_dir="./exp/{}-{}/images_visualizations/".format(
+                            opt.exp_id, cfg.FILE_NAME
+                        ),
+                        animal_class=animal_class,
                     )
-                )
 
-                images_list = []
-                for j in keypoint_list_clusters:
-                    images_list.append(keypoints_to_fname[str(j)])
+                if cfg.SAMPLING.STRATERGY == "herding":
+                    animal_avg = np.mean(keypoints_list, axis=0)
 
-                save_images(
-                    images_list[:5],
-                    images_path=cfg.DATASET.IMAGES,
-                    annot_path=cfg.DATASET.ANNOT,
-                    save_dir="./exp/{}-{}/images_visualizations/".format(
-                        opt.exp_id, cfg.FILE_NAME
-                    ),
-                    animal_class=animal_class,
-                )
+                    final_animal_vec = calc_dist(animal_avg, animal_list)
 
-            if cfg.SAMPLING.STRATERGY == "herding":
-                animal_avg = np.mean(keypoints_list, axis=0)
+                    final_animal_vec.sort(key=lambda x: x[1])
 
-                final_animal_vec = calc_dist(animal_avg, animal_list)
+                    images_list = []
 
-                final_animal_vec.sort(key=lambda x: x[1])
+                    for vec in final_animal_vec[:samples_per_class]:
+                        images_list.append(vec[0][0])
 
-                images_list = []
+                if cfg.MEMORY_TYPE != "fix" and cfg.SAMPLING.STRATERGY == "dpp":
+                    Phi = np.matmul(keypoints_list, keypoints_list.T)
+                    DPP = FiniteDPP("likelihood", **{"L": Phi})
 
-                for vec in final_animal_vec[:samples_per_class]:
-                    images_list.append(vec[0][0])
+                    k = 50
+                    for _ in range(5):
+                        DPP.sample_exact_k_dpp(size=k)
 
-            if cfg.MEMORY_TYPE != "fix" and cfg.SAMPLING.STRATERGY == "dpp":
-                Phi = np.matmul(keypoints_list, keypoints_list.T)
-                DPP = FiniteDPP("likelihood", **{"L": Phi})
+                    # print(DPP.list_of_samples)
 
-                k = 50
-                for _ in range(5):
-                    DPP.sample_exact_k_dpp(size=k)
+                    max_det = 0
+                    index_of_samples = DPP.list_of_samples[0]
 
-                # print(DPP.list_of_samples)
+                    for j in range(5):
+                        matrix = np.array(Phi)
+                        submatrix = matrix[
+                            np.ix_(DPP.list_of_samples[j], DPP.list_of_samples[j])
+                        ]
+                        try:
+                            det = np.linalg.det(submatrix)
+                            if det > max_det:
+                                max_det = det
+                                index_of_samples = DPP.list_of_samples[j]
+                        except:
+                            continue
 
-                max_det = 0
-                index_of_samples = DPP.list_of_samples[0]
+                    temp = keypoints_list[index_of_samples]
 
-                for j in range(5):
-                    matrix = np.array(Phi)
-                    submatrix = matrix[
-                        np.ix_(DPP.list_of_samples[j], DPP.list_of_samples[j])
-                    ]
-                    try:
-                        det = np.linalg.det(submatrix)
-                        if det > max_det:
-                            max_det = det
-                            index_of_samples = DPP.list_of_samples[j]
-                    except:
-                        continue
+                    images_list = []
+                    for j in temp:
+                        images_list.append(keypoints_to_fname[str(j)])
 
-                temp = keypoints_list[index_of_samples]
+                if cfg.SAMPLING.STRATERGY == "feature_dpp":
+                    tempset = AnimalDatasetCombined(
+                        cfg.DATASET.IMAGES,
+                        cfg.DATASET.ANNOT,
+                        fname_list,
+                        input_size=(512, 512),
+                        output_size=(128, 128),
+                        transforms=torchvision.transforms.Compose([ToTensor()]),
+                        train=True,
+                    )
+                    temp_loader = torch.utils.data.DataLoader(
+                        tempset,
+                        batch_size=cfg.TRAIN_INCREMENTAL.BATCH_SIZE,
+                        shuffle=True,
+                    )
 
-                images_list = []
-                for j in temp:
-                    images_list.append(keypoints_to_fname[str(j)])
+                    out, indices = feature_extract(m, temp_loader)
 
-            if cfg.SAMPLING.STRATERGY == "feature_dpp":
-                tempset = AnimalDatasetCombined(
-                    cfg.DATASET.IMAGES,
-                    cfg.DATASET.ANNOT,
-                    fname_list,
-                    input_size=(512, 512),
-                    output_size=(128, 128),
-                    transforms=torchvision.transforms.Compose([ToTensor()]),
-                    train=True,
-                )
-                temp_loader = torch.utils.data.DataLoader(
-                    tempset, batch_size=cfg.TRAIN_INCREMENTAL.BATCH_SIZE, shuffle=True
-                )
+                    out = np.mean(out, 1)
 
-                out, indices = feature_extract(m, temp_loader)
+                    out = np.reshape(out, (out.shape[0], out.shape[1] * out.shape[2]))
 
-                out = np.mean(out, 1)
+                    # print(out.shape)
 
-                out = np.reshape(out, (out.shape[0], out.shape[1] * out.shape[2]))
+                    Phi = np.matmul(out, out.T)
 
-                # print(out.shape)
+                    DPP = FiniteDPP("likelihood", **{"L": Phi})
 
-                Phi = np.matmul(out, out.T)
+                    k = samples_per_class
+                    for _ in range(5):
+                        DPP.sample_exact_k_dpp(size=k)
 
-                DPP = FiniteDPP("likelihood", **{"L": Phi})
+                    max_det = 0
+                    index_of_samples = DPP.list_of_samples[0]
 
-                k = samples_per_class
-                for _ in range(5):
-                    DPP.sample_exact_k_dpp(size=k)
+                    for j in range(5):
+                        matrix = np.array(Phi)
+                        submatrix = matrix[
+                            np.ix_(DPP.list_of_samples[j], DPP.list_of_samples[j])
+                        ]
+                        try:
+                            det = np.linalg.det(submatrix)
+                            if det > max_det:
+                                max_det = det
+                                index_of_samples = DPP.list_of_samples[j]
+                        except:
+                            continue
 
-                max_det = 0
-                index_of_samples = DPP.list_of_samples[0]
+                    index_of_samples = indices[index_of_samples].tolist()
+                    images_list = [fname_list[index] for index in index_of_samples]
 
-                for j in range(5):
-                    matrix = np.array(Phi)
-                    submatrix = matrix[
-                        np.ix_(DPP.list_of_samples[j], DPP.list_of_samples[j])
-                    ]
-                    try:
-                        det = np.linalg.det(submatrix)
-                        if det > max_det:
-                            max_det = det
-                            index_of_samples = DPP.list_of_samples[j]
-                    except:
-                        continue
-
-                index_of_samples = indices[index_of_samples].tolist()
-                images_list = [fname_list[index] for index in index_of_samples]
+                memory_dict[animal_class] = images_list
+                classes_visited.append(animal_class)
 
             train_tempset = AnimalDatasetCombined(
                 cfg.DATASET.IMAGES,
