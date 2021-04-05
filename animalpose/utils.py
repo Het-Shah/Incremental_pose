@@ -11,9 +11,10 @@ import pandas as pd
 from PIL import Image
 from PIL import ImageDraw
 import matplotlib.pyplot as plt
-import skimage
-from skimage.transform import PiecewiseAffineTransform, warp
-from skimage.io import imsave, imread
+
+# import skimage
+# from skimage.transform import PiecewiseAffineTransform, warp
+# from skimage.io import imsave, imread
 
 import torch
 import torchvision
@@ -55,7 +56,7 @@ def save_images(
     annot_path="/media2/het/Incremental_pose/data/updated_df.csv",
     save_dir="./keypoints/",
     animal_class=None,
-    train = True
+    train=True,
 ):
     if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
@@ -744,8 +745,8 @@ def rotate_elbow_knee_limbs(
 
         for ind in indices_to_be_rotated:
             if vis[ind[0]] == 1 and vis[ind[1]] == 1 and vis[ind[2]] == 1:
-                # angle = random.uniform(0.25, 0.6)
-                angle = 0.25
+                angle = random.uniform(0.25, 0.6)
+                # angle /= 4
                 rot_pt_x, rot_pt_y = rotate_about_pt(
                     keypoints[ind[1]][0],
                     keypoints[ind[1]][1],
@@ -764,14 +765,17 @@ def rotate_elbow_knee_limbs(
 
                 if rot_pt_x < 0 or rot_pt_y < 0 or rot_pt_x_paw < 0 or rot_pt_y_paw < 0:
                     rot_pt_x, rot_pt_y = keypoints[ind[1]][0], keypoints[ind[1]][1]
-                    rot_pt_x_paw, rot_pt_y_paw = keypoints[ind[2]][0], keypoints[ind[2]][1] 
+                    rot_pt_x_paw, rot_pt_y_paw = (
+                        keypoints[ind[2]][0],
+                        keypoints[ind[2]][1],
+                    )
 
-                    # move on 
+                    # move on
                     keypoints_dict[ind[0]].append(
                         [keypoints[ind[0]][0], keypoints[ind[0]][1], 1]
                     )
                     indices_visited.append(ind[0])
-                    
+
                     keypoints_dict[ind[1]].append([rot_pt_x, rot_pt_y, 1])
                     indices_visited.append(ind[1])
 
@@ -797,7 +801,7 @@ def rotate_elbow_knee_limbs(
                     [keypoints[ind[0]][0] / 512.0, keypoints[ind[0]][1] / 512.0]
                 )
                 c_dst.append([rot_pt_x / 512.0, rot_pt_y / 512.0])
-                c_dst.append([rot_pt_x_paw / 512.0, rot_pt_y / 512.0])
+                c_dst.append([rot_pt_x_paw / 512.0, rot_pt_y_paw / 512.0])
 
                 if not ind[0] in indices_visited:
                     keypoints_dict[ind[0]].append(
@@ -813,42 +817,26 @@ def rotate_elbow_knee_limbs(
                     keypoints_dict[ind[2]].append([rot_pt_x_paw, rot_pt_y_paw, 1])
                     indices_visited.append(ind[2])
 
-            # elif vis[ind[0]] == 0 and vis[ind[1]] == 1:
-            #     if not ind[1] in indices_visited:
-            #         keypoints_dict[ind[1]].append(
-            #             [keypoints[ind[1]][0], keypoints[ind[1]][1], 1]
-            #         )
-            #         indices_visited.append(ind[1])
-
-            #     if not ind[0] in indices_visited:
-            #         keypoints_dict[ind[0]].append([0, 0, 0])
-            #         indices_visited.append(ind[0])
-
-            # elif vis[ind[0]] == 1 and vis[ind[0]] == 0:
-            #     if not ind[1] in indices_visited:
-            #         keypoints_dict[ind[1]].append([0, 0, 0])
-            #         indices_visited.append(ind[1])
-
-            #     if not ind[0] in indices_visited:
-            #         keypoints_dict[ind[0]].append(
-            #             [keypoints[ind[0]][0], keypoints[ind[0]][1], 1]
-            #         )
-            #         indices_visited.append(ind[0])
-
             else:
                 if not ind[0] in indices_visited:
                     # keypoints_dict[ind[0]].append([0, 0, 0])
-                    keypoints_dict[ind[0]].append([keypoints[ind[0]][0], keypoints[ind[0]][1], vis[ind[0]]])
+                    keypoints_dict[ind[0]].append(
+                        [keypoints[ind[0]][0], keypoints[ind[0]][1], vis[ind[0]]]
+                    )
                     indices_visited.append(ind[0])
 
                 if not ind[1] in indices_visited:
                     # keypoints_dict[ind[0]].append([0, 0, 0])
-                    keypoints_dict[ind[1]].append([keypoints[ind[1]][0], keypoints[ind[1]][1], vis[ind[1]]])
+                    keypoints_dict[ind[1]].append(
+                        [keypoints[ind[1]][0], keypoints[ind[1]][1], vis[ind[1]]]
+                    )
                     indices_visited.append(ind[1])
 
                 if not ind[2] in indices_visited:
                     # keypoints_dict[ind[0]].append([0, 0, 0])
-                    keypoints_dict[ind[2]].append([keypoints[ind[2]][0], keypoints[ind[2]][1], vis[ind[2]]])
+                    keypoints_dict[ind[2]].append(
+                        [keypoints[ind[2]][0], keypoints[ind[2]][1], vis[ind[2]]]
+                    )
                     indices_visited.append(ind[2])
 
         for ind in indices_not_to_be_rotated:
@@ -867,29 +855,29 @@ def rotate_elbow_knee_limbs(
         cols, rows = 512, 512
 
         img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))
-        
-        print(c_src, c_dst)
+
+        # print(c_src, c_dst)
 
         # M = cv2.getAffineTransform(np.float32(c_src[:3]),np.float32(c_dst[:3]))
 
         # dst = cv2.warpAffine(img,M,(cols,rows))
-        
+
         warped = warp_image_cv(img, c_src, c_dst, dshape=(512, 512))
 
-        img2gray = cv2.cvtColor(warped,cv2.COLOR_BGR2GRAY)
+        img2gray = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
         ret, mask = cv2.threshold(img2gray, 10, 255, cv2.THRESH_BINARY)
         mask_inv = cv2.bitwise_not(mask)
 
-        dst = cv2.inpaint(warped,mask_inv,3,cv2.INPAINT_TELEA)
-        
+        dst = cv2.inpaint(warped, mask_inv, 3, cv2.INPAINT_TELEA)
+
         cv2.imwrite(os.path.join(output_dir, fname[:-4] + ".jpg"), dst)
 
         if cnt == 10:
-            return 
+            return
 
-        cnt+=1 
+        cnt += 1
 
-        # except:2010_005241_1_fn.jpg
+        # except:
         #     img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))
         #     cv2.imwrite(os.path.join(output_dir, fname[:-4] + ".jpg"), img)
 
