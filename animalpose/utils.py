@@ -746,7 +746,6 @@ def rotate_elbow_knee_limbs(
         for ind in indices_to_be_rotated:
             if vis[ind[0]] == 1 and vis[ind[1]] == 1 and vis[ind[2]] == 1:
                 angle = random.uniform(0.25, 0.6)
-                # angle /= 4
                 rot_pt_x, rot_pt_y = rotate_about_pt(
                     keypoints[ind[1]][0],
                     keypoints[ind[1]][1],
@@ -850,17 +849,10 @@ def rotate_elbow_knee_limbs(
 
         c_src = np.array(c_src)
         c_dst = np.array(c_dst)
-        # try:
 
         cols, rows = 512, 512
 
         img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))
-
-        # print(c_src, c_dst)
-
-        # M = cv2.getAffineTransform(np.float32(c_src[:3]),np.float32(c_dst[:3]))
-
-        # dst = cv2.warpAffine(img,M,(cols,rows))
 
         warped = warp_image_cv(img, c_src, c_dst, dshape=(512, 512))
 
@@ -871,11 +863,6 @@ def rotate_elbow_knee_limbs(
         dst = cv2.inpaint(warped, mask_inv, 3, cv2.INPAINT_TELEA)
 
         cv2.imwrite(os.path.join(output_dir, fname[:-4] + ".jpg"), dst)
-
-        if cnt == 10:
-            return
-
-        cnt += 1
 
         # except:
         #     img = cv2.imread(os.path.join(input_dir, fname[:-4] + ".jpg"))

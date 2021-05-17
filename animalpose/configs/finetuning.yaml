@@ -6,21 +6,21 @@ ANIMAL_CLASS_INCREMENTAL:
   - "horse"
   - "sheep"
 INCREMENTAL_STEP: 1
-MEMORY: 0.1
-MEMORY_TYPE: 'growing'
+MEMORY: 0
+MEMORY_TYPE: 'fixed'
 SAMPLING:
-  STRATERGY: 'rbf-dpp'
+  STRATERGY: 'random'
   DISTANCE_METRIC: 'eucl'
   CLUSTER_SAMPLING: 'random'
   CLUSTER_PROPORTION: 'same'
   N_CLUSTERS: 0
   GAMMA: 50
 DATASET:
-  DATA_ROOT: '/media2/het/Incremental_pose/data/'
-  IMAGES: '/media2/het/Incremental_pose/data/cropped_images/'
-  AUG_IMAGES: '/media2/het/Incremental_pose/data/rotated_images/'
-  ANNOT: '/media2/het/Incremental_pose/data/updated_df.csv'
-  AUG_ANNOT: '/media2/het/Incremental_pose/data/updated_df_rotated_random_all_three_no_zero_padding.csv'
+  DATA_ROOT: '/media2/het/Incremental_pose/mnt/data/'
+  IMAGES: '/media2/het/Incremental_pose/mnt/data/cropped_images/'
+  AUG_IMAGES: '/media2/het/Incremental_pose/mnt/data/rotated_images/'
+  ANNOT: '/media2/het/Incremental_pose/mnt/data/updated_df.csv'
+  AUG_ANNOT: '/media2/het/Incremental_pose/mnt/data/updated_df_rotated_random_all_three.csv'
 DATA_PRESET:
   TYPE: 'simple'
   SIGMA: 2
@@ -33,7 +33,7 @@ DATA_PRESET:
   - 128
 MODEL:
   TYPE: 'FastPose'
-  PRETRAINED: '/media2/het/AlphaPose/animalpose/exp/55-incremental_herding_kd.yaml/model_Base.pth'
+  PRETRAINED: '/media2/het/Incremental_pose/animalpose/exp/96-oracle.yaml/model_Base.pth'
   TRY_LOAD: ''
   NUM_DECONV_FILTERS:
   - 128
@@ -48,7 +48,7 @@ DETECTOR:
   NMS_THRES: 0.6
   CONFIDENCE: 0.05
 TRAIN:
-  BASE_DATA_FOR_INCREMENTAL: 0.1
+  BASE_DATA_FOR_INCREMENTAL: 0
   WORLD_SIZE: 4
   BATCH_SIZE: 13
   VAL_BATCH_SIZE: 13
@@ -60,18 +60,23 @@ TRAIN:
   LR_FACTOR: 0.1
   LR_STEP:
   - 15
+  - 25
   DPG_MILESTONE: 15
   DPG_STEP:
   - 19
+  - 29
 TRAIN_INCREMENTAL:
-  BASE_DATA_FOR_INCREMENTAL: 0.1
-  AUGMENTATION: 'None'
-  BATCH_SIZE: 5
-  VAL_BATCH_SIZE: 5
+  BASE_DATA_FOR_INCREMENTAL: 0
+  AUGMENTATION: 'none'
+  BATCH_SIZE: 13
+  VAL_BATCH_SIZE: 13
   BEGIN_EPOCH: 0
   END_EPOCH: 10
   KD_LOSS: False 
-  BALANCED_FINETUNING: True
+  BALANCED_FINETUNING: False
+  FINETUNING_NON_AUGMENTED: False
+  FINETUNING_OLD_DATA: False
+  FINETUNING_AUGMENTED: False
   OPTIMIZER: 'adam'
   LR: 0.0001
   WEIGHT_DECAY: 0

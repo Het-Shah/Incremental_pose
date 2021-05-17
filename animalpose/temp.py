@@ -41,22 +41,22 @@ from ray.util.multiprocessing import Pool
 
 from utils import *
 
-# df1 = pd.read_csv("/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three_cat.csv")
-# df2 = pd.read_csv("/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three_dog.csv")
-# df3 = pd.read_csv("/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three_cow.csv")
-# df4 = pd.read_csv("/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three_horse.csv")
-# df5 = pd.read_csv("/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three_sheep.csv")
+# df1 = pd.read_csv("/media2/het/Incremental_pose/data/updated_df_rotated_random_all_three_cat.csv")
+# df2 = pd.read_csv("/media2/het/Incremental_pose/data/updated_df_rotated_random_all_three_dog.csv")
+# df3 = pd.read_csv("/media2/het/Incremental_pose/data/updated_df_rotated_random_all_three_cow.csv")
+# df4 = pd.read_csv("/media2/het/Incremental_pose/data/updated_df_rotated_random_all_three_horse.csv")
+# df5 = pd.read_csv("/media2/het/Incremental_pose/data/updated_df_rotated_random_all_three_sheep.csv")
 
 # df = pd.concat([df1, df2, df3, df4, df5])
-# df.to_csv("/media/gaurav/Incremental_pose/data/updated_df_rotated_random_all_three.csv", index=False)
+# df.to_csv("/media2/het/Incremental_pose/data/updated_df_rotated_random_all_three.csv", index=False)
 # print(df.head())
 
 rotate_elbow_knee_limbs(
-    input_dir="/media/gaurav/Incremental_pose/data/cropped_images_no_zero_padding",
-    output_dir="/media/gaurav/Incremental_pose/data/temp/",
-    input_csv_file="/media/gaurav/Incremental_pose/data/updated_df_no_zero_padding.csv",
-    output_csv_file="/media/gaurav/Incremental_pose/data/updated_df_rotated_no_zero_padding_1.csv",
-    animal_class="horse",
+    input_dir="/media2/het/Incremental_pose/data/cropped_images",
+    output_dir="/media2/het/Incremental_pose/data/temp/",
+    input_csv_file="/media2/het/Incremental_pose/data/updated_df.csv",
+    output_csv_file="/media2/het/Incremental_pose/data/updated_df_rotated_no_zero_padding_1.csv",
+    animal_class="cow",
 )
 
 
@@ -182,7 +182,7 @@ rotate_elbow_knee_limbs(
 #         if cnt == 10:
 #             break
 
-#         cnt+=1 
+#         cnt+=1
 
 #     # val_loader.close()
 #     return loss_logger_val.avg, acc_logger.avg
