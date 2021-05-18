@@ -1,0 +1,86 @@
+ANIMAL_CLASS_BASE:
+  - "horse"
+ANIMAL_CLASS_INCREMENTAL:
+  - "tiger"
+INCREMENTAL_STEP: 1
+MEMORY: 1
+MEMORY_TYPE: 'fix'
+SAMPLING:
+  STRATERGY: 'random'
+  CLUSTER_SAMPLING: 'random'
+  CLUSTER_PROPORTION: 'same'
+  N_CLUSTERS: 0
+  GAMMA: 50
+DATASET:
+  DATA_ROOT: '/media2/het/Incremental_pose/mnt/data/'
+  IMAGES: '/media2/het/Incremental_pose/data/tig_dog/cropped_images/'
+  AUG_IMAGES: '/media2/het/Incremental_pose/mnt/data/rotated_images/'
+  ANNOT: '/media2/het/Incremental_pose/data/tig_dog/updated_tigdog.csv'
+  AUG_ANNOT: '/media2/het/Incremental_pose/mnt/data/updated_df_rotated_random_all_three.csv'
+DATA_PRESET:
+  TYPE: 'simple'
+  SIGMA: 2
+  NUM_JOINTS: 17
+  IMAGE_SIZE:
+  - 512
+  - 512
+  HEATMAP_SIZE:
+  - 128
+  - 128
+MODEL:
+  TYPE: 'FastPose'
+  PRETRAINED: ''
+  TRY_LOAD: ''
+  NUM_DECONV_FILTERS:
+  - 128
+  - 128
+  NUM_LAYERS: 50
+LOSS:
+  TYPE: 'MSELoss'
+DETECTOR:
+  NAME: 'yolo'
+  CONFIG: 'detector/yolo/cfg/yolov3-spp.cfg'
+  WEIGHTS: 'detector/yolo/data/yolov3-spp.weights'
+  NMS_THRES: 0.6
+  CONFIDENCE: 0.05
+TRAIN:
+  BASE_DATA_FOR_INCREMENTAL: 1
+  WORLD_SIZE: 4
+  BATCH_SIZE: 13
+  VAL_BATCH_SIZE: 13
+  BEGIN_EPOCH: 0
+  END_EPOCH: 30
+  OPTIMIZER: 'adam'
+  LR: 0.0001
+  WEIGHT_DECAY: 0
+  LR_FACTOR: 0.1
+  LR_STEP:
+  - 15
+  - 25
+  DPG_MILESTONE: 15
+  DPG_STEP:
+  - 19
+  - 29
+TRAIN_INCREMENTAL:
+  BASE_DATA_FOR_INCREMENTAL: 1
+  AUGMENTATION: 'none'
+  BATCH_SIZE: 13
+  VAL_BATCH_SIZE: 13
+  BEGIN_EPOCH: 0
+  END_EPOCH: 10
+  KD_LOSS: False 
+  BALANCED_FINETUNING: False
+  FINETUNING_NON_AUGMENTED: False
+  FINETUNING_OLD_DATA: False
+  FINETUNING_AUGMENTED: False
+  ICARL: False
+  EEIL: False
+  OPTIMIZER: 'adam'
+  LR: 0.0001
+  WEIGHT_DECAY: 0
+  LR_FACTOR: 0.1
+  LR_STEP:
+    - 15
+  DPG_MILESTONE: 15
+  DPG_STEP:
+  - 19 
